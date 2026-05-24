@@ -17,7 +17,11 @@ test.describe('Checkout scenarios', () => {
 
   test('should complete checkout successfully', async ({ authenticatedPage }) => {
     const checkoutData = CheckoutDataFactory.defaultCheckout();
-    await checkoutPage.fillInformation(checkoutData.firstName, checkoutData.lastName, checkoutData.postalCode);
+    await checkoutPage.fillInformation(
+      checkoutData.firstName,
+      checkoutData.lastName,
+      checkoutData.postalCode,
+    );
     await checkoutPage.continueCheckout();
 
     // Step two checkout verify

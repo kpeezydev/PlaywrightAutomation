@@ -1,13 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { ApiClient } from '../../utils/api-client';
 import { API_TEST_USERS } from '@/test-data/constants';
 import { UrlFactory } from '@/test-data/factories';
 
 test.describe('API Login scenarios', () => {
-  let apiClient: ApiClient;
-
-  test.beforeEach(({ request }) => {
-    apiClient = new ApiClient(request);
+  test.beforeEach(() => {
+    // apiClient not used in these tests, removed to avoid lint error
   });
 
   test('should authenticate successfully with valid credentials via API', async ({ request }) => {
@@ -16,8 +13,8 @@ test.describe('API Login scenarios', () => {
     const response = await request.post(UrlFactory.dummyJsonLogin(), {
       data: {
         username: user.username,
-        password: user.password
-      }
+        password: user.password,
+      },
     });
 
     // Assert status code
@@ -34,8 +31,8 @@ test.describe('API Login scenarios', () => {
     const response = await request.post(UrlFactory.dummyJsonLogin(), {
       data: {
         username: API_TEST_USERS.VALID.username,
-        password: 'wrongpassword'
-      }
+        password: 'wrongpassword',
+      },
     });
 
     // Assert error status

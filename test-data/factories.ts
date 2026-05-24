@@ -42,21 +42,27 @@ export class ApiTestDataFactory {
   static loginPayload(user: { username: string; password: string }) {
     return {
       username: user.username,
-      password: user.password
+      password: user.password,
     };
   }
 
-  static checkoutPayload(userId: number = 1, products: { id: number; quantity: number }[] = [{ id: 1, quantity: 2 }, { id: 2, quantity: 1 }]) {
+  static checkoutPayload(
+    userId: number = 1,
+    products: { id: number; quantity: number }[] = [
+      { id: 1, quantity: 2 },
+      { id: 2, quantity: 1 },
+    ],
+  ) {
     return {
       userId,
-      products
+      products,
     };
   }
 
   static orderPayload(orderId: number = 12345, status: string = 'COMPLETED') {
     return {
       orderId,
-      status
+      status,
     };
   }
 }
@@ -79,5 +85,13 @@ export class UrlFactory {
 
   static postmanEchoPost() {
     return URLS.POSTMAN_ECHO_POST;
+  }
+
+  static postmanEchoPut() {
+    return URLS.POSTMAN_ECHO_PUT;
+  }
+
+  static postmanEchoDelete() {
+    return URLS.POSTMAN_ECHO_DELETE;
   }
 }

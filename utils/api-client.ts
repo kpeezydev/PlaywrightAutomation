@@ -19,4 +19,18 @@ export class ApiClient {
     });
     return response.json();
   }
+
+  async put(endpoint: string, data: any) {
+    const response = await this.request.put(endpoint, {
+      data,
+    });
+    return response.json();
+  }
+
+  async delete(endpoint: string, data: any = {}) {
+    const response = await this.request.delete(endpoint, {
+      data,
+    });
+    return response.json();
+  }
 }
