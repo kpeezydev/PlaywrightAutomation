@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: process.env.CI
     ? [['dot'], ['github'], ['html', { open: 'never' }]]
     : [['list'], ['html', { open: 'on-failure' }]],
-  outputDir: 'playwright-report/test-data/',
+  outputDir: 'test-results/',
   use: {
     baseURL: 'https://www.saucedemo.com',
     trace: 'on-first-retry',
