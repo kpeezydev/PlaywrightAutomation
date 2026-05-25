@@ -6,8 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  outputDir: 'artifacts/test-results/',
+  reporter: process.env.CI
+    ? [['dot'], ['html', { open: 'never' }], ['junit', { outputFile: 'test-results/junit.xml' }]]
+    : [['list'], ['html', { open: 'on-failure' }]],
+  outputDir: 'playwright-report/test-data/',
   use: {
     baseURL: 'https://www.saucedemo.com',
     trace: 'on-first-retry',

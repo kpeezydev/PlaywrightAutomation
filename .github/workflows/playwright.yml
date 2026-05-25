@@ -10,6 +10,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
@@ -35,9 +37,10 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
-      - uses: actions/upload-artifact@v6
-        if: always()
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          name: test-results
-          path: artifacts/test-results/
-          retention-days: 7
+          name: Playwright Results
+          path: test-results/junit.xml
+          reporter: java-junit
