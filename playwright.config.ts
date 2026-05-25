@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI
-    ? [['dot'], ['html', { open: 'never' }], ['junit', { outputFile: 'test-results/junit.xml' }]]
+    ? [['dot'], ['github'], ['html', { open: 'never' }]]
     : [['list'], ['html', { open: 'on-failure' }]],
   outputDir: 'playwright-report/test-data/',
   use: {
