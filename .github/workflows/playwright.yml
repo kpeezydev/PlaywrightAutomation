@@ -31,6 +31,22 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npm test
+      - name: SonarCloud scan
+        uses: SonarSource/sonarcloud-github-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          organization: kpeezydev
+          args: >
+            -Dsonar.projectKey=playwright-ai-framework
+            -Dsonar.projectName=Playwright AI Framework
+            -Dsonar.sources=.
+            -Dsonar.exclusions=node_modules/**,playwright-report/**,test-results/**,allure-results/**,logs/**,artifacts/**,.git/**
+            -Dsonar.tests=tests/
+            -Dsonar.test.inclusions=tests/**/*.ts
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.sourceEncoding=UTF-8
       - uses: actions/upload-artifact@v6
         if: always()
         with:
