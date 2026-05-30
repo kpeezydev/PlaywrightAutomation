@@ -36,10 +36,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          organization: kpeezydev
           args: >
             -Dsonar.projectKey=playwright-ai-framework
-            -Dsonar.projectName=Playwright AI Framework
+            -Dsonar.projectName="Playwright AI Framework"
+            -Dsonar.organization=kpeezydev
             -Dsonar.sources=.
             -Dsonar.exclusions=node_modules/**,playwright-report/**,test-results/**,allure-results/**,logs/**,artifacts/**,.git/**
             -Dsonar.tests=tests/
