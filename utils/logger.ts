@@ -102,16 +102,23 @@ export class TestLogger {
   ): void {
     logger.info(
       `[REQ]${TestLogger.ctx(testName)}${method} ${url}`,
-      body !== undefined ? { body } : undefined,
+      body === undefined ? undefined : { body },
     );
   }
 
   private static staticResponse(status: number, body?: unknown, testName?: string): void {
-    const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
+    let level: string;
+    if (status >= 500) {
+      level = 'error';
+    } else if (status >= 400) {
+      level = 'warn';
+    } else {
+      level = 'info';
+    }
     logger.log(
       level,
       `[RES]${TestLogger.ctx(testName)}${status}`,
-      body !== undefined ? { body } : undefined,
+      body === undefined ? undefined : { body },
     );
   }
 
@@ -124,7 +131,7 @@ export class TestLogger {
     } else {
       logger.error(
         `[ERR]${TestLogger.ctx(testName)}${message}`,
-        error !== undefined ? { error } : undefined,
+        error === undefined ? undefined : { error },
       );
     }
   }

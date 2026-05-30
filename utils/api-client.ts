@@ -2,7 +2,7 @@ import { APIRequestContext } from '@playwright/test';
 import { TestLogger } from './logger';
 
 export class ApiClient {
-  constructor(private request: APIRequestContext) {}
+  constructor(private readonly request: APIRequestContext) {}
 
   async get(endpoint: string) {
     TestLogger.request('GET', endpoint);
