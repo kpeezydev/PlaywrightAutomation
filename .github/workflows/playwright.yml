@@ -32,7 +32,7 @@ jobs:
       - name: Run Playwright tests
         run: npm test
       - name: SonarCloud scan
-        uses: SonarSource/sonarcloud-github-action@v6
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
