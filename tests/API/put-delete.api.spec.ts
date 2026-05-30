@@ -3,17 +3,20 @@ import { ApiTestDataFactory, UrlFactory } from '@/test-data/factories';
 import { TestLogger } from '@/utils/logger';
 
 test.describe('API PUT and DELETE scenarios', () => {
-  test('should successfully send PUT request and echo back data via API', async ({ request }) => {
-    TestLogger.step('building PUT payload');
+  test('should successfully send PUT request and echo back data via API', async ({
+    request,
+  }, testInfo) => {
+    const log = TestLogger.forTest(testInfo.title);
+    log.step('building PUT payload');
     const putPayload = ApiTestDataFactory.orderPayload();
 
-    TestLogger.request('PUT', UrlFactory.postmanEchoPut(), putPayload);
+    log.request('PUT', UrlFactory.postmanEchoPut(), putPayload);
     const response = await request.put(UrlFactory.postmanEchoPut(), {
       data: putPayload,
     });
 
     const responseBody = await response.json();
-    TestLogger.response(response.status(), responseBody);
+    log.response(response.status(), responseBody);
 
     expect(response.ok()).toBeTruthy();
     expect(responseBody).toHaveProperty('data');
@@ -23,19 +26,20 @@ test.describe('API PUT and DELETE scenarios', () => {
 
   test('should successfully send DELETE request and return response via API', async ({
     request,
-  }) => {
+  }, testInfo) => {
+    const log = TestLogger.forTest(testInfo.title);
     const deletePayload = {
       resourceId: 999,
       action: 'delete',
     };
 
-    TestLogger.request('DELETE', UrlFactory.postmanEchoDelete(), deletePayload);
+    log.request('DELETE', UrlFactory.postmanEchoDelete(), deletePayload);
     const response = await request.delete(UrlFactory.postmanEchoDelete(), {
       data: deletePayload,
     });
 
     const responseBody = await response.json();
-    TestLogger.response(response.status(), responseBody);
+    log.response(response.status(), responseBody);
 
     expect(response.ok()).toBeTruthy();
     expect(responseBody).toHaveProperty('data');

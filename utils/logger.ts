@@ -36,29 +36,105 @@ const logger = winston.createLogger({
 });
 
 export class TestLogger {
+  private constructor(private readonly testName: string) {}
+
+  static forTest(testName: string): TestLogger {
+    return new TestLogger(testName);
+  }
+
+  step(message: string, data?: Record<string, unknown>): void {
+    TestLogger.staticStep(message, data, this.testName);
+  }
+
+  request(method: string, url: string, body?: unknown): void {
+    TestLogger.staticRequest(method, url, body, this.testName);
+  }
+
+  response(status: number, body?: unknown): void {
+    TestLogger.staticResponse(status, body, this.testName);
+  }
+
+  error(message: string, error?: unknown): void {
+    TestLogger.staticError(message, error, this.testName);
+  }
+
+  debug(message: string, data?: Record<string, unknown>): void {
+    TestLogger.staticDebug(message, data, this.testName);
+  }
+
   static step(message: string, data?: Record<string, unknown>): void {
-    logger.info(`[STEP] ${message}`, data);
+    TestLogger.staticStep(message, data);
   }
 
   static request(method: string, url: string, body?: unknown): void {
-    logger.info(`[REQ] ${method} ${url}`, body !== undefined ? { body } : undefined);
+    TestLogger.staticRequest(method, url, body);
   }
 
   static response(status: number, body?: unknown): void {
-    const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
-    logger.log(level, `[RES] ${status}`, body !== undefined ? { body } : undefined);
+    TestLogger.staticResponse(status, body);
   }
 
   static error(message: string, error?: unknown): void {
-    if (error instanceof Error) {
-      logger.error(`[ERR] ${message}`, { error: error.message, stack: error.stack });
-    } else {
-      logger.error(`[ERR] ${message}`, error !== undefined ? { error } : undefined);
-    }
+    TestLogger.staticError(message, error);
   }
 
   static debug(message: string, data?: Record<string, unknown>): void {
-    logger.debug(message, data);
+    TestLogger.staticDebug(message, data);
+  }
+
+  private static ctx(testName?: string): string {
+    return testName ? ` - ${testName} - ` : ' ';
+  }
+
+  private static staticStep(
+    message: string,
+    data?: Record<string, unknown>,
+    testName?: string,
+  ): void {
+    logger.info(`[STEP]${TestLogger.ctx(testName)}${message}`, data);
+  }
+
+  private static staticRequest(
+    method: string,
+    url: string,
+    body?: unknown,
+    testName?: string,
+  ): void {
+    logger.info(
+      `[REQ]${TestLogger.ctx(testName)}${method} ${url}`,
+      body !== undefined ? { body } : undefined,
+    );
+  }
+
+  private static staticResponse(status: number, body?: unknown, testName?: string): void {
+    const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
+    logger.log(
+      level,
+      `[RES]${TestLogger.ctx(testName)}${status}`,
+      body !== undefined ? { body } : undefined,
+    );
+  }
+
+  private static staticError(message: string, error?: unknown, testName?: string): void {
+    if (error instanceof Error) {
+      logger.error(`[ERR]${TestLogger.ctx(testName)}${message}`, {
+        error: error.message,
+        stack: error.stack,
+      });
+    } else {
+      logger.error(
+        `[ERR]${TestLogger.ctx(testName)}${message}`,
+        error !== undefined ? { error } : undefined,
+      );
+    }
+  }
+
+  private static staticDebug(
+    message: string,
+    data?: Record<string, unknown>,
+    testName?: string,
+  ): void {
+    logger.debug(`${TestLogger.ctx(testName)}${message}`, data);
   }
 }
 

@@ -19,6 +19,12 @@
       "skillPath": "skills/playwright-cli/SKILL.md",
       "computedHash": "cc5d9f0cc5760217829fbebfa05a23b4ab475ed34005a9ea44e181b8112409f3"
     },
+    "sonarqube-mcp": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "github",
+      "skillPath": "plugins/developer-kit-tools/skills/sonarqube-mcp/SKILL.md",
+      "computedHash": "2be8d3bdbdd8c7c9e37d7e30765c16f38f191b34c973cf2e295f31f26603fbf6"
+    },
     "typescript-advanced-types": {
       "source": "wshobson/agents",
       "sourceType": "github",

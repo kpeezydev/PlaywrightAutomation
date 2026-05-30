@@ -3,17 +3,20 @@ import { ApiTestDataFactory, UrlFactory } from '@/test-data/factories';
 import { TestLogger } from '@/utils/logger';
 
 test.describe('API Checkout scenarios', () => {
-  test('should process checkout (add to cart) successfully via API', async ({ request }) => {
-    TestLogger.step('building checkout payload');
+  test('should process checkout (add to cart) successfully via API', async ({
+    request,
+  }, testInfo) => {
+    const log = TestLogger.forTest(testInfo.title);
+    log.step('building checkout payload');
     const checkoutPayload = ApiTestDataFactory.checkoutPayload();
 
-    TestLogger.request('POST', UrlFactory.dummyJsonCartsAdd(), checkoutPayload);
+    log.request('POST', UrlFactory.dummyJsonCartsAdd(), checkoutPayload);
     const response = await request.post(UrlFactory.dummyJsonCartsAdd(), {
       data: checkoutPayload,
     });
 
     const body = await response.json();
-    TestLogger.response(response.status(), body);
+    log.response(response.status(), body);
 
     expect(response.ok()).toBeTruthy();
     expect(body.id).toBeDefined();
@@ -22,17 +25,18 @@ test.describe('API Checkout scenarios', () => {
     expect(body.products.length).toBe(2);
   });
 
-  test('should simulate order completion via API', async ({ request }) => {
-    TestLogger.step('building order payload');
+  test('should simulate order completion via API', async ({ request }, testInfo) => {
+    const log = TestLogger.forTest(testInfo.title);
+    log.step('building order payload');
     const orderPayload = ApiTestDataFactory.orderPayload();
 
-    TestLogger.request('POST', UrlFactory.postmanEchoPost(), orderPayload);
+    log.request('POST', UrlFactory.postmanEchoPost(), orderPayload);
     const response = await request.post(UrlFactory.postmanEchoPost(), {
       data: orderPayload,
     });
 
     const body = await response.json();
-    TestLogger.response(response.status(), body);
+    log.response(response.status(), body);
 
     expect(response.ok()).toBeTruthy();
     expect(response.status()).toBe(200);
