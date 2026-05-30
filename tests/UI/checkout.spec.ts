@@ -28,7 +28,7 @@ test.describe('Checkout scenarios', () => {
     await checkoutPage.continueCheckout();
 
     log.step('verifying checkout step two and completing order');
-    await expect(authenticatedPage).toHaveURL(/.*checkout-step-two.html/);
+    await expect(authenticatedPage).toHaveURL(/checkout-step-two\.html$/);
     await checkoutPage.finishCheckout();
 
     log.step('asserting order completion');

@@ -20,7 +20,7 @@ test.describe('Login scenarios', () => {
     await loginPage.login(user.username, user.password);
 
     log.step('asserting successful login redirect');
-    await expect(page).toHaveURL(/.*inventory.html/);
+    await expect(page).toHaveURL(/inventory\.html$/);
   });
 
   test('should display error message with invalid credentials', async ({ page }, testInfo) => {
