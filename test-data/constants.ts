@@ -37,4 +37,7 @@ export const URLS = {
   POSTMAN_ECHO_POST: 'https://postman-echo.com/post',
   POSTMAN_ECHO_PUT: 'https://postman-echo.com/put',
   POSTMAN_ECHO_DELETE: 'https://postman-echo.com/delete',
+  DUMMY_JSON_PRODUCTS: 'https://dummyjson.com/products',
+  DUMMY_JSON_PRODUCT: (id: number) => `https://dummyjson.com/products/${id}`,
+  DUMMY_JSON_PRODUCTS_ADD: 'https://dummyjson.com/products/add',
 };

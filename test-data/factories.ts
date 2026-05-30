@@ -65,6 +65,15 @@ export class ApiTestDataFactory {
       status,
     };
   }
+
+  static productPayload(title?: string, price?: number) {
+    return {
+      title: title ?? 'Test Product',
+      price: price ?? 29.99,
+      description: 'A sample product for API testing.',
+      category: 'test-category',
+    };
+  }
 }
 
 /**
@@ -93,5 +102,17 @@ export class UrlFactory {
 
   static postmanEchoDelete() {
     return URLS.POSTMAN_ECHO_DELETE;
+  }
+
+  static dummyJsonProducts() {
+    return URLS.DUMMY_JSON_PRODUCTS;
+  }
+
+  static dummyJsonProduct(id: number) {
+    return URLS.DUMMY_JSON_PRODUCT(id);
+  }
+
+  static dummyJsonProductsAdd() {
+    return URLS.DUMMY_JSON_PRODUCTS_ADD;
   }
 }
