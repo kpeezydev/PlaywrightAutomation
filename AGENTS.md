@@ -12,7 +12,7 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | `tests/API/`               | API tests against https://dummyjson.com                                                              |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
 | `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |
-| `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper)                                                 |
+| `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)         |
 | `test-data/`               | Factory classes (`UserFactory`, `CheckoutDataFactory`, `ApiTestDataFactory`) + shared constants/URLs |
 
 ## Commands

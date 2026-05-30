@@ -1,13 +1,13 @@
 import { test, expect } from '@/fixtures/auth.fixture';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { CheckoutDataFactory } from '@/test-data/factories';
+import { TestLogger } from '@/utils/logger';
 
 test.describe('Checkout scenarios', () => {
   let checkoutPage: CheckoutPage;
 
   test.beforeEach(async ({ authenticatedPage }) => {
-    // Navigate to a pre-condition state where user can checkout
-    // For saucedemo, we can add an item to the cart and go to checkout step one
+    TestLogger.step('adding item to cart and navigating to checkout');
     await authenticatedPage.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
     await authenticatedPage.locator('.shopping_cart_link').click();
     await authenticatedPage.locator('[data-test="checkout"]').click();
@@ -16,6 +16,7 @@ test.describe('Checkout scenarios', () => {
   });
 
   test('should complete checkout successfully', async ({ authenticatedPage }) => {
+    TestLogger.step('filling in checkout information');
     const checkoutData = CheckoutDataFactory.defaultCheckout();
     await checkoutPage.fillInformation(
       checkoutData.firstName,
@@ -24,11 +25,11 @@ test.describe('Checkout scenarios', () => {
     );
     await checkoutPage.continueCheckout();
 
-    // Step two checkout verify
+    TestLogger.step('verifying checkout step two and completing order');
     await expect(authenticatedPage).toHaveURL(/.*checkout-step-two.html/);
     await checkoutPage.finishCheckout();
 
-    // Checkout complete verify
+    TestLogger.step('asserting order completion');
     await expect(checkoutPage.completeHeader).toHaveText('Thank you for your order!');
   });
 });
