@@ -20,13 +20,18 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 ```bash
 npm test                         # runs all UI + API specs
 npm run test:ui                  # interactive UI mode
+ALLURE_REPORT=true npm test      # runs tests with Allure reporting enabled
 npx playwright test -g "Login"   # run specs matching a grep pattern
+npm run allure:generate          # generate Allure HTML report from allure-results/
+npm run allure:serve             # generate + serve Allure report (opens browser)
+npm run allure:open              # open existing Allure report (allure-report/)
 npm run lint                     # eslint (.eslintrc.js, strict via tsconfig)
 npm run lint:fix                 # eslint --fix
 npm run format                   # prettier --write .
 ```
 
-> Run lint/format with `npm run…`. Running `npx playwright…` directly bypasses nothing but is fine for ad-hoc execution.
+> Set `ALLURE_REPORT=true` to enable Allure reporting locally. On CI it's always enabled. Raw results go to `allure-results/`; generated HTML report goes to `allure-report/`. Reports are uploaded as CI artifacts.
+> **Note**: `allure:generate` and `allure:serve` require Java (JRE) installed locally. On CI (GitHub Actions ubuntu-latest) Java is pre-installed. On Windows, install Java via `winget install EclipseAdoptium.Temurin.21.JRE` or your preferred JDK.
 
 ## Path alias
 
