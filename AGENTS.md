@@ -12,14 +12,20 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | `tests/API/`               | API tests against https://dummyjson.com                                                              |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
 | `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |
-| `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)         |
+| `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
 | `test-data/`               | Factory classes (`UserFactory`, `CheckoutDataFactory`, `ApiTestDataFactory`) + shared constants/URLs |
+| `allure-results/`  | Raw Allure test result files (gitignored, generated on every run) |
+| `report_<timestamp>/` | Generated Allure HTML report (gitignored, created by `scripts/generate-allure-report.js`) |
 
 ## Commands
 
 ```bash
 npm test                         # runs all UI + API specs
 npm run test:ui                  # interactive UI mode
+npm run test:allure              # runs tests + auto-generates Allure report (report_<timestamp>)
+npm run allure:generate          # generate Allure HTML report from allure-results/ (report_<timestamp>)
+npm run allure:open              # open the latest report_* directory in browser
+npm run allure:report            # generate + open (convenience shortcut)
 npx playwright test -g "Login"   # run specs matching a grep pattern
 npm run lint                     # eslint (.eslintrc.js, strict via tsconfig)
 npm run lint:fix                 # eslint --fix
@@ -27,6 +33,8 @@ npm run format                   # prettier --write .
 ```
 
 > Run lint/format with `npm run…`. Running `npx playwright…` directly bypasses nothing but is fine for ad-hoc execution.
+> Allure CLI requires Java 8+ (JRE) to be installed on the system. Report generation scripts depend on it.
+> Report generation uses `scripts/generate-allure-report.js`; opening the latest uses `scripts/open-latest-allure-report.js`.
 
 ## Path alias
 

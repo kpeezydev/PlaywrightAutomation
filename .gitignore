@@ -10,6 +10,11 @@ artifacts/
 test-results/
 playwright-report/
 
+# Allure reporting
+allure-results/
+allure-report/
+report_*/
+
 # Coverage
 coverage/
 *.lcov

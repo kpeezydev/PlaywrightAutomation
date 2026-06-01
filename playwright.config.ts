@@ -6,9 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI
-    ? [['dot'], ['github'], ['html', { open: 'never' }]]
-    : [['list'], ['html', { open: 'on-failure' }]],
+  reporter: [
+    ['allure-playwright'],
+    ...(process.env.CI ? [['html', { open: 'never' }]] : [['html', { open: 'on-failure' }]]),
+  ],
   outputDir: 'test-results/',
   use: {
     baseURL: 'https://www.saucedemo.com',

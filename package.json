@@ -4,8 +4,12 @@
   "description": "Playwright Automation Framework with POM and fixtures",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "playwright test && node scripts/generate-allure-report.js",
     "test:ui": "playwright test --ui",
+    "test:allure": "npm test",
+    "allure:generate": "node scripts/generate-allure-report.js",
+    "allure:open": "node scripts/open-latest-allure-report.js",
+    "allure:report": "node scripts/generate-allure-report.js && node scripts/open-latest-allure-report.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write ."
@@ -15,6 +19,8 @@
     "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
+    "allure-commandline": "^2.42.0",
+    "allure-playwright": "^3.9.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
