@@ -58,7 +58,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
     environment:
@@ -72,13 +72,18 @@ jobs:
         with:
           name: allure-results
           path: allure-results/
-      - name: Generate Allure Report with history
-        uses: simple-elf/allure-report-action@v1
-        if: always()
-        with:
-          allure_results: allure-results
-          allure_history: allure-history
-          report_path: allure-report
+      - name: Pull Allure history from gh-pages
+        run: |
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout origin/gh-pages -- allure-history 2>/dev/null || true
+            if [ -d allure-history ]; then
+              cp -r allure-history/* allure-results/ 2>/dev/null || true
+              rm -rf allure-history
+            fi
+          fi
+      - name: Generate Allure report
+        run: npx allure generate allure-results --clean -o allure-report
       - uses: actions/upload-pages-artifact@v3
         if: always()
         with:

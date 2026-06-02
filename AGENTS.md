@@ -73,7 +73,7 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 **Allure reporting in CI:**
 - Tests produce raw results in `allure-results/`
 - The test job generates the Allure HTML report (`allure-report/`) and uploads two artifacts: `allure-results` (raw data) and `allure-report` (HTML report)
-- A separate `deploy` job (dependent on `test`) downloads `allure-results`, generates a report with history via `simple-elf/allure-report-action`, and deploys to GitHub Pages
+- A separate `deploy` job (dependent on `test`) downloads `allure-results`, pulls history from the `gh-pages` branch, generates the report via `npx allure generate`, and deploys to GitHub Pages
 - The Allure report on Pages preserves history across runs for trend charts
 
 **Setup required:**
