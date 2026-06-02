@@ -33,7 +33,7 @@ jobs:
         run: npm test
       - name: Generate Allure HTML report
         if: always()
-        run: npx allure generate allure-results --clean -o allure-report
+        run: npx allure-commandline generate allure-results --clean -o allure-report
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -83,7 +83,7 @@ jobs:
             fi
           fi
       - name: Generate Allure report
-        run: npx allure generate allure-results --clean -o allure-report
+        run: npx allure-commandline generate allure-results --clean -o allure-report
       - uses: actions/upload-pages-artifact@v3
         if: always()
         with:
