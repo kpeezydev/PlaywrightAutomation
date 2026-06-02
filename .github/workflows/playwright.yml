@@ -54,7 +54,7 @@ jobs:
           retention-days: 7
 
   deploy:
-    if: always()
+    if: github.event_name != 'pull_request' && always()
     needs: test
     runs-on: ubuntu-latest
     permissions:
