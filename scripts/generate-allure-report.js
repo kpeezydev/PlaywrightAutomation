@@ -9,4 +9,5 @@ const reportDir = `report_${timestamp}`;
 const fullPath = path.resolve(reportDir);
 
 execSync(`allure generate allure-results --clean -o "${fullPath}"`, { stdio: 'inherit', cwd: process.cwd() });
-console.log(`\nReport generated at: ${fullPath}`);
+console.log(`\nReport is generated at: ${fullPath}`);
+
