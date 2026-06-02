@@ -4,7 +4,7 @@
   "description": "Playwright Automation Framework with POM and fixtures",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test && node scripts/generate-allure-report.js",
+    "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:allure": "npm test",
     "allure:generate": "node scripts/generate-allure-report.js",

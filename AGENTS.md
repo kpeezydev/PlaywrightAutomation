@@ -15,6 +15,7 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
 | `test-data/`               | Factory classes (`UserFactory`, `CheckoutDataFactory`, `ApiTestDataFactory`) + shared constants/URLs |
 | `allure-results/`  | Raw Allure test result files (gitignored, generated on every run) |
+| `allure-report/` | Generated Allure HTML report in CI (gitignored, created by `npx allure generate` in GitHub Actions) |
 | `report_<timestamp>/` | Generated Allure HTML report (gitignored, created by `scripts/generate-allure-report.js`) |
 
 ## Commands
@@ -64,6 +65,21 @@ When you add a new directory, page object, fixture, utility, factory, or any oth
 | Operating System | Windows 11         |
 | IDE              | Visual Studio Code |
 | IDE Terminal     | PowerShell 7+      |
+
+## CI / CD — GitHub Actions
+
+The workflow at `.github/workflows/playwright.yml` runs on push, pull request, and manual dispatch.
+
+**Allure reporting in CI:**
+- Tests produce raw results in `allure-results/`
+- The test job generates the Allure HTML report (`allure-report/`) and uploads two artifacts: `allure-results` (raw data) and `allure-report` (HTML report)
+- A separate `deploy` job (dependent on `test`) downloads `allure-results`, generates a report with history via `simple-elf/allure-report-action`, and deploys to GitHub Pages
+- The Allure report on Pages preserves history across runs for trend charts
+
+**Setup required:**
+- GitHub Pages must be enabled in repo Settings > Pages > Source: "GitHub Actions"
+- Java JRE 8+ is required for the Allure CLI (pre-installed on `ubuntu-latest`)
+- The workflow requires `contents: write`, `pages: write`, and `id-token: write` permissions in the deploy job
 
 ## Code style
 
