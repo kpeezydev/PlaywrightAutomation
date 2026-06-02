@@ -31,9 +31,63 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npm test
+      - name: Generate Allure HTML report
+        if: always()
+        run: npx allure-commandline generate allure-results --clean -o allure-report
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 7
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 7
       - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  deploy:
+    if: github.event_name != 'pull_request' && always()
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v6
+        with:
+          name: allure-results
+          path: allure-results/
+      - name: Pull Allure history from gh-pages
+        run: |
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout origin/gh-pages -- allure-history 2>/dev/null || true
+            if [ -d allure-history ]; then
+              cp -r allure-history/* allure-results/ 2>/dev/null || true
+              rm -rf allure-history
+            fi
+          fi
+      - name: Generate Allure report
+        run: npx allure-commandline generate allure-results --clean -o allure-report
+      - uses: actions/upload-pages-artifact@v3
+        if: always()
+        with:
+          path: allure-report
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
