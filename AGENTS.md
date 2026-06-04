@@ -1,5 +1,7 @@
 # AGENTS.md — Playwright AI Framework
 
+> **For human onboarding, see [`README.md`](./README.md).** This file targets AI coding agents.
+
 ## Project
 
 Single-package Playwright test project. No monorepo. No framework scaffolding beyond `@playwright/test` + TypeScript.
@@ -54,9 +56,11 @@ npm run format                   # prettier --write .
 
 All credentials and payloads live in `test-data/constants.ts`. Tests import from factory classes in `test-data/factories.ts`. Do not embed literal credentials inline in spec files.
 
-## Keeping this file current
+## Keeping these files current
 
 When you add a new directory, page object, fixture, utility, factory, or any other significant structure, update this file — especially the **Directory map** section. If purpose or location changes, keep it in sync so agents always have an accurate project map.
+
+Keep `README.md` in sync whenever you add, remove, or change commands, project structure, or any information a human onboarding would need. AGENTS.md targets AI agents; README.md targets humans — both must stay accurate.
 
 ## Working environment
 
