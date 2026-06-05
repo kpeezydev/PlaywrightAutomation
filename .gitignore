@@ -12,6 +12,7 @@ playwright-report/
 
 # Allure reporting
 allure-results/
+allure-history/
 allure-report/
 report_*/
 

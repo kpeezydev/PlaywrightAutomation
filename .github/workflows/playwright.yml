@@ -72,18 +72,23 @@ jobs:
         with:
           name: allure-results
           path: allure-results/
-      - name: Pull Allure history from gh-pages
-        run: |
-          git fetch origin gh-pages --depth=1 2>/dev/null || true
-          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
-            git checkout origin/gh-pages -- allure-history 2>/dev/null || true
-            if [ -d allure-history ]; then
-              cp -r allure-history/* allure-results/ 2>/dev/null || true
-              rm -rf allure-history
-            fi
-          fi
+      - name: Restore Allure history from cache
+        id: cache-allure-history
+        uses: actions/cache@v5
+        with:
+          path: allure-history
+          key: allure-history-${{ github.ref_name }}
+      - name: Inject history into allure-results
+        if: steps.cache-allure-history.outputs.cache-hit == 'true'
+        run: cp -r allure-history/* allure-results/ 2>/dev/null || true
       - name: Generate Allure report
         run: npx allure-commandline generate allure-results --clean -o allure-report
+      - name: Save allure-history from generated report
+        run: |
+          if [ -d allure-report/history ]; then
+            mkdir -p allure-history
+            cp -r allure-report/history/* allure-history/
+          fi
       - uses: actions/upload-pages-artifact@v3
         if: always()
         with:

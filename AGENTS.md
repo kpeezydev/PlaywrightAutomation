@@ -17,6 +17,7 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
 | `test-data/`               | Factory classes (`UserFactory`, `CheckoutDataFactory`, `ApiTestDataFactory`) + shared constants/URLs |
 | `allure-results/`  | Raw Allure test result files (gitignored, generated on every run) |
+| `allure-history/` | Persistent Allure run history for trend charts (gitignored, managed by `scripts/generate-allure-report.js` and CI cache) |
 | `allure-report/` | Generated Allure HTML report in CI (gitignored, created by `npx allure generate` in GitHub Actions) |
 | `report_<timestamp>/` | Generated Allure HTML report (gitignored, created by `scripts/generate-allure-report.js`) |
 
@@ -76,9 +77,9 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 
 **Allure reporting in CI:**
 - Tests produce raw results in `allure-results/`
-- The test job generates the Allure HTML report (`allure-report/`) and uploads two artifacts: `allure-results` (raw data) and `allure-report` (HTML report)
-- A separate `deploy` job (dependent on `test`) downloads `allure-results`, pulls history from the `gh-pages` branch, generates the report via `npx allure generate`, and deploys to GitHub Pages
-- The Allure report on Pages preserves history across runs for trend charts
+- The test job generates the Allure HTML report (`allure-report/`) and uploads three artifacts: `allure-results` (raw data), `allure-report` (HTML report), and `playwright-report`
+- A separate `deploy` job (dependent on `test`) downloads `allure-results`, restores `allure-history` from GitHub Actions cache, generates the report via `npx allure generate`, and deploys to GitHub Pages
+- The Allure report on Pages preserves history across runs for trend charts via the cached `allure-history/` directory
 
 **Setup required:**
 - GitHub Pages must be enabled in repo Settings > Pages > Source: "GitHub Actions"
@@ -88,6 +89,19 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 ## Avoid duplication
 
 Check existing code (page objects, utilities, factories, fixtures, helpers) before writing new code. Reuse and extend before creating. If a pattern already exists—same logic, same selector, same helper—use it rather than duplicating it. Extract shared logic into utilities or factories when you find yourself repeating yourself.
+
+## No hardcoded parameters
+
+Never hardcode literal values like usernames, passwords, URLs, or payload data directly in test or step code. Always use factory classes and constants from `test-data/`.
+
+```typescript
+// DO:
+const user = UserFactory.validUser();
+await loginPage.login(user.username, user.password);
+
+// DON'T:
+await loginPage.login('standard_user', 'secret_sauce');
+```
 
 ## Code style
 

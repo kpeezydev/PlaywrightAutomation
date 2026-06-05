@@ -1,6 +1,6 @@
-const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const allure = require('allure-commandline');
 
 const cwd = process.cwd();
 const dirs = fs
@@ -16,4 +16,5 @@ if (dirs.length === 0) {
 
 const latest = path.join(cwd, dirs[0]);
 console.log(`Opening: ${latest}`);
-execSync(`allure open "${latest}"`, { stdio: 'inherit', cwd });
+const child = allure(['open', latest]);
+child.on('exit', (code) => process.exit(code));
