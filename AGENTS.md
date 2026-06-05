@@ -12,6 +12,8 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `tests/UI/`                | Browser E2E tests against https://www.saucedemo.com                                                  |
 | `tests/API/`               | API tests against https://dummyjson.com                                                              |
+| `features/`                | Gherkin `.feature` files for BDD scenarios                                                           |
+| `steps/`                   | BDD step definitions; delegates to page objects, fixtures, and API utilities                         |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
 | `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |
 | `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
@@ -25,11 +27,13 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 ```bash
 npm test                         # runs all UI + API specs
 npm run test:ui                  # interactive UI mode
+npm run test:bdd                 # runs BDD tests (Gherkin feature files)
 npm run test:allure              # runs tests + auto-generates Allure report (report_<timestamp>)
 npm run allure:generate          # generate Allure HTML report from allure-results/ (report_<timestamp>)
 npm run allure:open              # open the latest report_* directory in browser
 npm run allure:report            # generate + open (convenience shortcut)
 npx playwright test -g "Login"   # run specs matching a grep pattern
+npx bddgen                       # regenerate BDD test files from .feature files (runs automatically in test:bdd)
 npm run lint                     # eslint (.eslintrc.js, strict via tsconfig)
 npm run lint:fix                 # eslint --fix
 npm run format                   # prettier --write .
