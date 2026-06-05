@@ -20,7 +20,7 @@ When(
   },
 );
 
-When('I click the login button', async ({ page }) => {
+When('I click on the login button', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.loginButton.click();
 });
