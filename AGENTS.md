@@ -89,6 +89,10 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 - Java JRE 8+ is required for the Allure CLI (pre-installed on `ubuntu-latest`)
 - The workflow requires `contents: write`, `pages: write`, and `id-token: write` permissions in the deploy job
 
+## Avoid duplication
+
+Check existing code (page objects, utilities, factories, fixtures, helpers) before writing new code. Reuse and extend before creating. If a pattern already exists—same logic, same selector, same helper—use it rather than duplicating it. Extract shared logic into utilities or factories when you find yourself repeating yourself.
+
 ## Code style
 
 TypeScript strict mode (`strict: true`), `no-floating-promises: error`, `no-explicit-any: warn`.  

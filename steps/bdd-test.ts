@@ -1,5 +1,6 @@
 import { test as base, APIResponse } from 'playwright-bdd';
 import { LoginPage } from '@/pages/LoginPage';
+import { UserFactory } from '@/test-data/factories';
 
 type BddFixtures = {
   authenticatedPage: LoginPage['page'];
@@ -13,7 +14,9 @@ export const test = base.extend<BddFixtures>({
   authenticatedPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('standard_user', 'secret_sauce');
+    const user = UserFactory.validUser();
+    
+    await loginPage.login(user.username, user.password);
     await page.waitForURL('**/inventory.html');
     await use(page);
   },
