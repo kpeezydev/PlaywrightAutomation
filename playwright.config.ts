@@ -36,6 +36,7 @@ export default defineConfig({
     }),
     {
       name: 'chromium',
+      testIgnore: 'tests/playwright/**',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
