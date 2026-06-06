@@ -17,8 +17,9 @@ export const test = bddTest.extend<BddFixtures>({
     log.step('Setting up authenticated session — navigating to login page');
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    log.step('Logging in as standard_user');
-    await loginPage.login('standard_user', 'secret_sauce');
+    const user = UserFactory.validUser();
+    log.step(`Logging in as ${user.username}`);
+    await loginPage.login(user.username, user.password);
     log.step('Waiting for inventory page to confirm login');
     await page.waitForURL('**/inventory.html');
     await use(page);
