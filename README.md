@@ -27,9 +27,10 @@ npm run test:ui
 
 | Path                       | Purpose                                              |
 | -------------------------- | ---------------------------------------------------- |
-| `tests/UI/`                | Browser E2E tests against SauceDemo                  |
-| `tests/API/`               | API tests against DummyJSON                          |
-| `features/`                | Gherkin `.feature` files for BDD scenarios           |
+| `tests/UI/`                | Browser E2E tests + BDD feature files against SauceDemo                  |
+| `tests/API/`               | API tests + BDD feature files against DummyJSON                          |
+| `playwright/API/`          | Auto-generated Playwright spec files from API BDD features (gitignored)  |
+| `playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)   |
 | `steps/`                   | BDD step definitions + shared fixtures               |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage)  |
 | `fixtures/`                | Custom Playwright fixtures (`authenticatedPage`)     |
@@ -58,12 +59,12 @@ npm run test:ui
 
 This project uses [playwright-bdd](https://vitalets.github.io/playwright-bdd/) to write and run BDD tests with Gherkin `.feature` files. The BDD layer sits on top of the existing Page Objects, fixtures, and utilities — no logic is duplicated.
 
-- Feature files: `features/` organized by capability
+- Feature files: `tests/feature/API/` and `tests/feature/UI/` organized by test type
 - Step definitions: `steps/` (`*.steps.ts`) that delegate to existing page objects, utilities, and factories
-- Generated test files: `features/generated/` (auto-generated, gitignored)
+- Generated test files: `playwright/API/` and `playwright/UI/` (auto-generated, gitignored)
 
 To add a new BDD scenario:
-1. Create a `.feature` file under `features/<capability>/`
+1. Create a `.feature` file under `tests/API/` or `tests/UI/`
 2. Create or update a `.steps.ts` file in `steps/` with matching step definitions
 3. Run `npx bddgen test` to regenerate test files, then `npm run test:bdd` to verify
 

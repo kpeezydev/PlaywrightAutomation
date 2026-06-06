@@ -10,10 +10,10 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 
 | Path                       | Purpose                                                                                              |
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `tests/UI/`                | Browser E2E tests against https://www.saucedemo.com                                                  |
-| `tests/API/`               | API tests against https://dummyjson.com                                                              |
-| `features/`                | Gherkin `.feature` files for BDD scenarios (organized by capability)                                 |
-| `features/generated/`      | Auto-generated Playwright spec files from BDD features (gitignored)                                  |
+| `tests/UI/`                | Browser E2E tests + BDD feature files against https://www.saucedemo.com                              |
+| `tests/API/`               | API tests + BDD feature files against https://dummyjson.com                                          |
+| `playwright/API/`          | Auto-generated Playwright spec files from API BDD features (gitignored)                              |
+| `playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)                               |
 | `steps/`                   | Step definition files (`*.steps.ts`) + shared BDD fixtures (`fixtures.steps.ts`)                     |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
 | `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |

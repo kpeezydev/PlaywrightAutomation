@@ -21,10 +21,18 @@ export default defineConfig({
   },
   projects: [
     defineBddProject({
-      name: 'bdd',
-      features: 'features/**/*.feature',
+      name: 'bdd-api',
+      features: 'tests/feature/API/*.feature',
+      featuresRoot: 'tests/feature/API',
       steps: 'steps/**/*.steps.ts',
-      outputDir: 'features/generated',
+      outputDir: 'tests/playwright/API',
+    }),
+    defineBddProject({
+      name: 'bdd-ui',
+      features: 'tests/feature/UI/*.feature',
+      featuresRoot: 'tests/feature/UI',
+      steps: 'steps/**/*.steps.ts',
+      outputDir: 'tests/playwright/UI',
     }),
     {
       name: 'chromium',
