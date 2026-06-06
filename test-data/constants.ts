@@ -41,3 +41,12 @@ export const URLS = {
   DUMMY_JSON_PRODUCT: (id: number) => `https://dummyjson.com/products/${id}`,
   DUMMY_JSON_PRODUCTS_ADD: 'https://dummyjson.com/products/add',
 };
+
+export const SAUCE_PRODUCTS: readonly string[] = [
+  'sauce-labs-backpack',
+  'sauce-labs-bike-light',
+  'sauce-labs-bolt-t-shirt',
+  'sauce-labs-fleece-jacket',
+  'sauce-labs-onesie',
+  'test.allthethings()-t-shirt-(red)',
+];
