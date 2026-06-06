@@ -27,8 +27,11 @@ npm run test:ui
 
 | Path                       | Purpose                                              |
 | -------------------------- | ---------------------------------------------------- |
-| `tests/UI/`                | Browser E2E tests against SauceDemo                  |
-| `tests/API/`               | API tests against DummyJSON                          |
+| `tests/UI/`                | Browser E2E tests + BDD feature files against SauceDemo                  |
+| `tests/API/`               | API tests + BDD feature files against DummyJSON                          |
+| `tests/playwright/API/`    | Auto-generated Playwright spec files from API BDD features (gitignored)  |
+| `tests/playwright/UI/`     | Auto-generated Playwright spec files from UI BDD features (gitignored)   |
+| `steps/`                   | BDD step definitions + shared fixtures               |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage)  |
 | `utils/`                   | ApiClient wrapper, Winston-based TestLogger          |
 | `test-data/`               | Factory classes + shared constants and URLs          |
@@ -38,8 +41,11 @@ npm run test:ui
 
 | Command                    | Description                                          |
 | -------------------------- | ---------------------------------------------------- |
-| `npm test`                 | Run all UI and API tests                             |
+| `npm test`                 | Run all UI and API tests (legacy + BDD)              |
 | `npm run test:ui`          | Open Playwright interactive UI mode                  |
+| `npm run test:bdd`         | Run only BDD tests (project filter)                  |
+| `npm run test:bdd:ui`      | Open Playwright UI mode for BDD tests                |
+| `npm run test:bdd:grep`    | Run BDD tests matching a grep pattern                |
 | `npm run test:allure`      | Run tests and auto-generate Allure report            |
 | `npm run allure:generate`  | Generate Allure HTML report from latest results      |
 | `npm run allure:open`      | Open the latest Allure report in browser             |
@@ -47,6 +53,19 @@ npm run test:ui
 | `npm run lint`             | Run ESLint checks                                    |
 | `npm run lint:fix`         | Fix auto-fixable lint issues                         |
 | `npm run format`           | Format code with Prettier                            |
+
+## BDD Tests
+
+This project uses [playwright-bdd](https://vitalets.github.io/playwright-bdd/) to write and run BDD tests with Gherkin `.feature` files. The BDD layer sits on top of the existing Page Objects, fixtures, and utilities — no logic is duplicated.
+
+- Feature files: `tests/feature/API/` and `tests/feature/UI/` organized by test type
+- Step definitions: `steps/` (`*.steps.ts`) that delegate to existing page objects, utilities, and factories
+- Generated test files: `playwright/API/` and `playwright/UI/` (auto-generated, gitignored)
+
+To add a new BDD scenario:
+1. Create a `.feature` file under `tests/API/` or `tests/UI/`
+2. Create or update a `.steps.ts` file in `steps/` with matching step definitions
+3. Run `npx bddgen test` to regenerate test files, then `npm run test:bdd` to verify
 
 ## CI/CD
 

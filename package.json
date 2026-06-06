@@ -7,6 +7,9 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:allure": "npm test",
+    "test:bdd": "playwright test --project=bdd-api --project=bdd-ui",
+    "test:bdd:ui": "playwright test --project=bdd-api --project=bdd-ui --ui",
+    "test:bdd:grep": "playwright test --project=bdd-api --project=bdd-ui --grep",
     "allure:generate": "node scripts/generate-allure-report.js",
     "allure:open": "node scripts/open-latest-allure-report.js",
     "allure:report": "node scripts/generate-allure-report.js && node scripts/open-latest-allure-report.js",
@@ -24,6 +27,7 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
+    "playwright-bdd": "^9.0.0",
     "prettier": "^3.2.5",
     "typescript": "^6.0.3",
     "winston": "^3.19.0"
