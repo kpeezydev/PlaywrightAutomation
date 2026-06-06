@@ -12,6 +12,9 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `tests/UI/`                | Browser E2E tests against https://www.saucedemo.com                                                  |
 | `tests/API/`               | API tests against https://dummyjson.com                                                              |
+| `features/`                | Gherkin `.feature` files for BDD scenarios (organized by capability)                                 |
+| `features/generated/`      | Auto-generated Playwright spec files from BDD features (gitignored)                                  |
+| `steps/`                   | Step definition files (`*.steps.ts`) + shared BDD fixtures (`fixtures.steps.ts`)                     |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
 | `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |
 | `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
@@ -23,8 +26,11 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 ## Commands
 
 ```bash
-npm test                         # runs all UI + API specs
+npm test                         # runs all UI + API specs (legacy + BDD)
 npm run test:ui                  # interactive UI mode
+npm run test:bdd                 # runs only BDD tests (--project=bdd)
+npm run test:bdd:ui              # interactive UI mode for BDD tests
+npm run test:bdd:grep            # BDD tests matching a grep pattern (e.g., npm run test:bdd:grep -- "Login")
 npm run test:allure              # runs tests + auto-generates Allure report (report_<timestamp>)
 npm run allure:generate          # generate Allure HTML report from allure-results/ (report_<timestamp>)
 npm run allure:open              # open the latest report_* directory in browser
@@ -93,3 +99,5 @@ Check existing code (page objects, utilities, factories, fixtures, helpers) befo
 
 TypeScript strict mode (`strict: true`), `no-floating-promises: error`, `no-explicit-any: warn`.  
 Prettier: single quotes, trailing commas, 2-space indent, printWidth 100, semicolons enforced. ESLint's prettier integration is active — run `npm run lint:fix` before committing formatting changes.
+
+**Code readability priority** — Favor clarity and intent-revealing code over brevity or cleverness. Use descriptive names, avoid deeply nested logic, extract meaningful helper functions, and keep functions focused on a single responsibility. Readability is the default; optimize for the next reader, not the writer.

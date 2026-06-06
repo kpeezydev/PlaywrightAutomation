@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddProject } from 'playwright-bdd';
 
 export default defineConfig({
   testDir: './tests',
@@ -19,6 +20,12 @@ export default defineConfig({
     headless: !!process.env.CI,
   },
   projects: [
+    defineBddProject({
+      name: 'bdd',
+      features: 'features/**/*.feature',
+      steps: 'steps/**/*.steps.ts',
+      outputDir: 'features/generated',
+    }),
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
