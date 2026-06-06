@@ -16,7 +16,6 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | `tests/playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)                               |
 | `steps/`                   | Step definition files (`*.steps.ts`) + shared BDD fixtures (`fixtures.steps.ts`)                     |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
-| `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |
 | `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
 | `test-data/`               | Factory classes (`UserFactory`, `CheckoutDataFactory`, `ApiTestDataFactory`) + shared constants/URLs |
 | `allure-results/`  | Raw Allure test result files (gitignored, generated on every run) |

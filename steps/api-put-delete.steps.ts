@@ -2,7 +2,6 @@ import { expect } from '@playwright/test';
 import { When, Then } from '@/steps/fixtures.steps';
 import { ApiTestDataFactory, UrlFactory } from '@/test-data/factories';
 
-
 When(
   'I send a PUT request to postman-echo with an order payload',
   async ({ request, apiContext }) => {

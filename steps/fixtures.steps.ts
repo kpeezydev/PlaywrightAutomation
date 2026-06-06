@@ -1,6 +1,7 @@
 import { test as bddTest, createBdd } from 'playwright-bdd';
 import { LoginPage } from '@/pages/LoginPage';
 import { TestLogger } from '@/utils/logger';
+import { UserFactory } from '@/test-data/factories';
 
 type BddFixtures = {
   apiContext: { response: any };

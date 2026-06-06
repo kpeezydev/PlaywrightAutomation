@@ -29,11 +29,10 @@ npm run test:ui
 | -------------------------- | ---------------------------------------------------- |
 | `tests/UI/`                | Browser E2E tests + BDD feature files against SauceDemo                  |
 | `tests/API/`               | API tests + BDD feature files against DummyJSON                          |
-| `playwright/API/`          | Auto-generated Playwright spec files from API BDD features (gitignored)  |
-| `playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)   |
+| `tests/playwright/API/`    | Auto-generated Playwright spec files from API BDD features (gitignored)  |
+| `tests/playwright/UI/`     | Auto-generated Playwright spec files from UI BDD features (gitignored)   |
 | `steps/`                   | BDD step definitions + shared fixtures               |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage)  |
-| `fixtures/`                | Custom Playwright fixtures (`authenticatedPage`)     |
 | `utils/`                   | ApiClient wrapper, Winston-based TestLogger          |
 | `test-data/`               | Factory classes + shared constants and URLs          |
 | `allure-results/`          | Raw Allure test results (generated, gitignored)      |
