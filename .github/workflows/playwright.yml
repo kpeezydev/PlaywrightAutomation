@@ -29,6 +29,8 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+      - name: Generate BDD specs
+        run: npx bddgen
       - name: Run Playwright tests
         run: npm test
       - name: Generate Allure HTML report

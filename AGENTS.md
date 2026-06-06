@@ -12,8 +12,8 @@ Single-package Playwright test project. No monorepo. No framework scaffolding be
 | -------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `tests/feature/UI/`        | Browser E2E tests + BDD feature files against https://www.saucedemo.com                              |
 | `tests/feature/API/`       | API tests + BDD feature files against https://dummyjson.com                                          |
-| `playwright/API/`          | Auto-generated Playwright spec files from API BDD features (gitignored)                              |
-| `playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)                               |
+| `tests/playwright/API/`          | Auto-generated Playwright spec files from API BDD features (gitignored)                              |
+| `tests/playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)                               |
 | `steps/`                   | Step definition files (`*.steps.ts`) + shared BDD fixtures (`fixtures.steps.ts`)                     |
 | `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
 | `fixtures/auth.fixture.ts` | Custom fixture: `authenticatedPage` auto-logs in as `standard_user`                                  |
