@@ -2,18 +2,16 @@ import { expect } from '@playwright/test';
 import { When, Then } from '@/steps/fixtures.steps';
 import { ApiTestDataFactory, UrlFactory } from '@/test-data/factories';
 import { TestLogger } from '@/utils/logger';
+import { apiRequest } from '@/utils/api-helper';
 
 When(
   'I request all products from the dummyjson API',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
-    log.request('GET', UrlFactory.dummyJsonProducts());
-    const response = await request.get(UrlFactory.dummyJsonProducts(), {
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'GET',
+      url: UrlFactory.dummyJsonProducts(),
       params: { limit: 5 },
     });
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
   },
 );
 
@@ -33,12 +31,10 @@ Then(
 When(
   'I request a product by ID 1 from the dummyjson API',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
-    log.request('GET', UrlFactory.dummyJsonProduct(1));
-    const response = await request.get(UrlFactory.dummyJsonProduct(1));
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'GET',
+      url: UrlFactory.dummyJsonProduct(1),
+    });
   },
 );
 
@@ -55,11 +51,10 @@ Then('I should receive the product with ID 1', async ({ apiContext, $testInfo })
 When(
   'I request a non-existent product with ID 99999 from the dummyjson API',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
-    log.request('GET', UrlFactory.dummyJsonProduct(99999));
-    const response = await request.get(UrlFactory.dummyJsonProduct(99999));
-    log.response(response.status());
-    apiContext.response = { status: response.status() };
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'GET',
+      url: UrlFactory.dummyJsonProduct(99999),
+    });
   },
 );
 
@@ -70,15 +65,12 @@ Then('I should receive a 404 status code', async ({ apiContext, $testInfo }) => 
 });
 
 When('I create a new product via the dummyjson API', async ({ request, apiContext, $testInfo }) => {
-  const log = TestLogger.forTest($testInfo.title);
   const payload = ApiTestDataFactory.productPayload('CRUD Test Product', 15.99);
-  log.request('POST', UrlFactory.dummyJsonProductsAdd(), payload);
-  const response = await request.post(UrlFactory.dummyJsonProductsAdd(), {
+  await apiRequest(request, apiContext, $testInfo, {
+    method: 'POST',
+    url: UrlFactory.dummyJsonProductsAdd(),
     data: payload,
   });
-  const body = await response.json();
-  log.response(response.status(), body);
-  apiContext.response = { status: response.status(), body };
 });
 
 Then(
@@ -96,18 +88,15 @@ Then(
 When(
   'I update a product with ID 1 via the dummyjson API',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
     const updatePayload = {
       title: 'Updated Product Title',
       price: 49.99,
     };
-    log.request('PUT', UrlFactory.dummyJsonProduct(1), updatePayload);
-    const response = await request.put(UrlFactory.dummyJsonProduct(1), {
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'PUT',
+      url: UrlFactory.dummyJsonProduct(1),
       data: updatePayload,
     });
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
   },
 );
 
@@ -126,12 +115,10 @@ Then(
 When(
   'I delete a product with ID 1 via the dummyjson API',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
-    log.request('DELETE', UrlFactory.dummyJsonProduct(1));
-    const response = await request.delete(UrlFactory.dummyJsonProduct(1));
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'DELETE',
+      url: UrlFactory.dummyJsonProduct(1),
+    });
   },
 );
 

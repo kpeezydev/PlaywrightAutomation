@@ -3,6 +3,7 @@ import { Given, When, Then } from '@/steps/fixtures.steps';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { CheckoutDataFactory, ApiTestDataFactory, UrlFactory } from '@/test-data/factories';
 import { TestLogger } from '@/utils/logger';
+import { apiRequest } from '@/utils/api-helper';
 
 Given('I am authenticated on saucedemo', async ({ authenticatedPage, $testInfo }) => {
   const log = TestLogger.forTest($testInfo.title);
@@ -49,13 +50,11 @@ Then('I should see the order confirmation message', async ({ authenticatedPage, 
 });
 
 When('I add products to cart via the dummyjson API', async ({ request, apiContext, $testInfo }) => {
-  const log = TestLogger.forTest($testInfo.title);
-  const payload = ApiTestDataFactory.checkoutPayload();
-  log.request('POST', UrlFactory.dummyJsonCartsAdd(), payload);
-  const response = await request.post(UrlFactory.dummyJsonCartsAdd(), { data: payload });
-  const body = await response.json();
-  log.response(response.status(), body);
-  apiContext.response = { status: response.status(), body };
+  await apiRequest(request, apiContext, $testInfo, {
+    method: 'POST',
+    url: UrlFactory.dummyJsonCartsAdd(),
+    data: ApiTestDataFactory.checkoutPayload(),
+  });
 });
 
 Then(
@@ -76,13 +75,11 @@ Then(
 When(
   'I send an order completion request to postman-echo',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
-    const payload = ApiTestDataFactory.orderPayload();
-    log.request('POST', UrlFactory.postmanEchoPost(), payload);
-    const response = await request.post(UrlFactory.postmanEchoPost(), { data: payload });
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'POST',
+      url: UrlFactory.postmanEchoPost(),
+      data: ApiTestDataFactory.orderPayload(),
+    });
   },
 );
 

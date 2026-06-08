@@ -9,14 +9,11 @@ Given('I am on the inventory page', async ({ authenticatedPage, $testInfo }) => 
   await expect(authenticatedPage).toHaveURL(/inventory\.html$/);
 });
 
-When(
-  'I add the {word} to the cart',
-  async ({ authenticatedPage, $testInfo }, product: string) => {
-    const log = TestLogger.forTest($testInfo.title);
-    log.step(`Adding ${product} to cart`);
-    await authenticatedPage.locator(`[data-test="add-to-cart-${product}"]`).click();
-  },
-);
+When('I add the {word} to the cart', async ({ authenticatedPage, $testInfo }, product: string) => {
+  const log = TestLogger.forTest($testInfo.title);
+  log.step(`Adding ${product} to cart`);
+  await authenticatedPage.locator(`[data-test="add-to-cart-${product}"]`).click();
+});
 
 Then('the cart badge should show 1 item', async ({ authenticatedPage, $testInfo }) => {
   const log = TestLogger.forTest($testInfo.title);

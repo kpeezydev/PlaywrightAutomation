@@ -5,6 +5,7 @@ import { UserFactory } from '@/test-data/factories';
 import { UrlFactory } from '@/test-data/factories';
 import { API_TEST_USERS } from '@/test-data/constants';
 import { TestLogger } from '@/utils/logger';
+import { apiRequest } from '@/utils/api-helper';
 
 Given('I am on the login page', async ({ page, $testInfo }) => {
   const log = TestLogger.forTest($testInfo.title);
@@ -56,27 +57,25 @@ Then(
 When(
   'I authenticate via API with valid credentials',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
     const user = API_TEST_USERS.VALID;
     const payload = { username: user.username, password: user.password };
-    log.request('POST', UrlFactory.dummyJsonLogin(), payload);
-    const response = await request.post(UrlFactory.dummyJsonLogin(), { data: payload });
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'POST',
+      url: UrlFactory.dummyJsonLogin(),
+      data: payload,
+    });
   },
 );
 
 When(
   'I authenticate via API with invalid credentials',
   async ({ request, apiContext, $testInfo }) => {
-    const log = TestLogger.forTest($testInfo.title);
     const payload = { username: API_TEST_USERS.VALID.username, password: 'wrongpassword' };
-    log.request('POST', UrlFactory.dummyJsonLogin(), payload);
-    const response = await request.post(UrlFactory.dummyJsonLogin(), { data: payload });
-    const body = await response.json();
-    log.response(response.status(), body);
-    apiContext.response = { status: response.status(), body };
+    await apiRequest(request, apiContext, $testInfo, {
+      method: 'POST',
+      url: UrlFactory.dummyJsonLogin(),
+      data: payload,
+    });
   },
 );
 

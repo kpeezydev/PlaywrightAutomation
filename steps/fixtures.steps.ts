@@ -9,7 +9,11 @@ type BddFixtures = {
 };
 
 export const test = bddTest.extend<BddFixtures>({
-  apiContext: async ({}, use) => {
+  apiContext: async (
+    // eslint-disable-next-line no-empty-pattern
+    {},
+    use,
+  ) => {
     const store = { response: undefined };
     await use(store);
   },
