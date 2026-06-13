@@ -92,11 +92,49 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 
 ## Avoid duplication
 
-Check existing code (page objects, utilities, factories, fixtures, helpers) before writing new code. Reuse and extend before creating. If a pattern already exists—same logic, same selector, same helper—use it rather than duplicating it. Extract shared logic into utilities or factories when you find yourself repeating yourself.
+Check existing code before writing new code. Reuse and extend before creating. If a pattern already exists—same logic, same selector, same helper—use it rather than duplicating it. Extract shared logic into utilities or factories when you find yourself repeating yourself.
 
-## Code style
+## Code Style
 
-TypeScript strict mode (`strict: true`), `no-floating-promises: error`, `no-explicit-any: warn`.  
-Prettier: single quotes, trailing commas, 2-space indent, printWidth 100, semicolons enforced. ESLint's prettier integration is active — run `npm run lint:fix` before committing formatting changes.
+### Python Best Practices
+
+#### Formatting
+- Follow PEP 8 — 4-space indentation, 79-char line limit
+- Use `black` for formatting, `isort` for imports
+
+#### Naming
+- `snake_case` for variables/functions, `PascalCase` for classes, `UPPER_CASE` for constants
+- Descriptive names — `user_count` not `n`
+
+#### Types
+- Type hint all function signatures
+```python
+  def get_user(user_id: int) -> dict[str, str]:
+```
+
+#### Functions
+- One function = one responsibility
+- Keep functions short and focused
+
+#### Error Handling
+- Catch specific exceptions, never bare `except:`
+- Use `with` statements for resource cleanup
+
+#### Patterns
+- Prefer comprehensions over `map`/`filter`
+- Use generators for large datasets
 
 **Code readability priority** — Favor clarity and intent-revealing code over brevity or cleverness. Use descriptive names, avoid deeply nested logic, extract meaningful helper functions, and keep functions focused on a single responsibility. Readability is the default; optimize for the next reader, not the writer.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+When the user types `/graphify`, invoke the `skill` tool with `skill: "graphify"` before doing anything else.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

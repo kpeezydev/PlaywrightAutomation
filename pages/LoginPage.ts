@@ -1,17 +1,18 @@
 import { Page, Locator } from '@playwright/test';
+import { healingLocator, SelfHealingLocator } from '@/healing';
 
 export class LoginPage {
   readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
+  readonly usernameInput: SelfHealingLocator;
+  readonly passwordInput: SelfHealingLocator;
+  readonly loginButton: SelfHealingLocator;
   readonly errorMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameInput = page.locator('[data-test="username"]');
-    this.passwordInput = page.locator('[data-test="password"]');
-    this.loginButton = page.locator('[data-test="login-button"]');
+    this.usernameInput = healingLocator(page, '[data-test="usernamee"]');
+    this.passwordInput = healingLocator(page, '[data-test="password"]');
+    this.loginButton = healingLocator(page, '[data-test="login-button"]');
     this.errorMessage = page.locator('[data-test="error"]');
   }
 

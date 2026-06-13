@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { defineConfig, devices } from '@playwright/test';
 import { defineBddProject } from 'playwright-bdd';
 
@@ -18,6 +19,10 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     headless: !!process.env.CI,
+  },
+  timeout: 60000, // 60 seconds to allow self-healing (Gemini API call + retry)
+  expect: {
+    timeout: 5000, // 5 seconds for expect assertions
   },
   projects: [
     defineBddProject({

@@ -1,21 +1,22 @@
 import { Page, Locator } from '@playwright/test';
+import { healingLocator, SelfHealingLocator } from '@/healing';
 
 export class CheckoutPage {
   readonly page: Page;
-  readonly firstNameInput: Locator;
-  readonly lastNameInput: Locator;
-  readonly postalCodeInput: Locator;
-  readonly continueButton: Locator;
-  readonly finishButton: Locator;
+  readonly firstNameInput: SelfHealingLocator;
+  readonly lastNameInput: SelfHealingLocator;
+  readonly postalCodeInput: SelfHealingLocator;
+  readonly continueButton: SelfHealingLocator;
+  readonly finishButton: SelfHealingLocator;
   readonly completeHeader: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.firstNameInput = page.locator('[data-test="firstName"]');
-    this.lastNameInput = page.locator('[data-test="lastName"]');
-    this.postalCodeInput = page.locator('[data-test="postalCode"]');
-    this.continueButton = page.locator('[data-test="continue"]');
-    this.finishButton = page.locator('[data-test="finish"]');
+    this.firstNameInput = healingLocator(page, '[data-test="firstName"]');
+    this.lastNameInput = healingLocator(page, '[data-test="lastName"]');
+    this.postalCodeInput = healingLocator(page, '[data-test="postalCode"]');
+    this.continueButton = healingLocator(page, '[data-test="continue"]');
+    this.finishButton = healingLocator(page, '[data-test="finish"]');
     this.completeHeader = page.locator('.complete-header');
   }
 
