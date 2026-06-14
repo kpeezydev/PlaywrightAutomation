@@ -1,14 +1,14 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { HealingEntry } from './types';
 import { TestLogger } from '@/utils/logger';
 
 const STORE_FILE = path.resolve(process.cwd(), 'healing-store.json');
 
 export class HealingStore {
-  private cache: Map<string, HealingEntry> = new Map();
+  private readonly cache: Map<string, HealingEntry> = new Map();
   private loaded = false;
-  private validatedKeys = new Set<string>();
+  private readonly validatedKeys = new Set<string>();
 
   async load(): Promise<void> {
     if (this.loaded) return;

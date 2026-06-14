@@ -1,8 +1,7 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '@/steps/fixtures.steps';
 import { LoginPage } from '@/pages/LoginPage';
-import { UserFactory } from '@/test-data/factories';
-import { UrlFactory } from '@/test-data/factories';
+import { UserFactory, UrlFactory } from '@/test-data/factories';
 import { API_TEST_USERS } from '@/test-data/constants';
 import { TestLogger } from '@/utils/logger';
 import { apiRequest } from '@/utils/api-helper';
@@ -70,7 +69,10 @@ When(
 When(
   'I authenticate via API with invalid credentials',
   async ({ request, apiContext, $testInfo }) => {
-    const payload = { username: API_TEST_USERS.VALID.username, password: 'wrongpassword' };
+    const payload = {
+      username: API_TEST_USERS.VALID.username,
+      password: API_TEST_USERS.INVALID_PASSWORD,
+    };
     await apiRequest(request, apiContext, $testInfo, {
       method: 'POST',
       url: UrlFactory.dummyJsonLogin(),
