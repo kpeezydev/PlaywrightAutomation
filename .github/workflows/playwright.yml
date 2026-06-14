@@ -33,6 +33,8 @@ jobs:
         run: npx bddgen
       - name: Run Playwright tests
         run: npm test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - name: Generate Allure HTML report
         if: always()
         run: npx allure-commandline generate allure-results --clean -o allure-report
