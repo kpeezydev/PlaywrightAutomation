@@ -56,6 +56,13 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: healing-store
+          path: healing-store.json
+          if-no-files-found: ignore
+          retention-days: 7
 
   deploy:
     if: github.event_name != 'pull_request' && always()
