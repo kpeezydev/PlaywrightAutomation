@@ -10,7 +10,7 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameInput = healingLocator(page, '[data-test="usernamee"]');
+    this.usernameInput = healingLocator(page, '[data-test="xxxxx"]');
     this.passwordInput = healingLocator(page, '[data-test="password"]');
     this.loginButton = healingLocator(page, '[data-test="login-button"]');
     this.errorMessage = page.locator('[data-test="error"]');

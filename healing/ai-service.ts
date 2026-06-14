@@ -27,7 +27,7 @@ export class AiLocatorService {
   ): Promise<LocatorCandidate[]> {
     const prompt = this.buildPrompt(pageHtml, brokenLocator);
 
-    TestLogger.staticDebug(`Calling Gemini for locator: ${brokenLocator}`);
+    TestLogger.staticStep(`Calling Gemini for locator: ${brokenLocator}`);
 
     const response = await this.client.models.generateContent({
       model: GEMINI_MODEL,
@@ -43,6 +43,7 @@ export class AiLocatorService {
       return [];
     }
 
+    TestLogger.staticStep('Gemini AI response', { response: text });
     return this.parseResponse(text);
   }
 

@@ -91,13 +91,13 @@ export class SelfHealingLocator {
         throw err;
       }
 
-      TestLogger.staticDebug(`Locator failed: ${this.originalSelector}. Initiating healing.`);
+      TestLogger.staticStep(`Locator failed: ${this.originalSelector}. Initiating healing.`);
 
       const resolvedSelector = await this.heal();
       if (!resolvedSelector) {
-        throw new Error(
-          `Self-healing failed for locator: ${this.originalSelector}. No replacement found.`,
-        );
+        const errorMsg = `Self-healing failed for locator: ${this.originalSelector}. No replacement found.`;
+        TestLogger.staticError(errorMsg);
+        throw new Error(errorMsg);
       }
 
       const healedLoc = this.page.locator(resolvedSelector);
@@ -110,7 +110,7 @@ export class SelfHealingLocator {
     if (cached) {
       const needsRevalidation = this.store.isRevalidationRequired(this.originalSelector);
       if (!needsRevalidation) {
-        TestLogger.staticDebug(`Using cached healed locator: ${cached.healedLocator}`);
+        TestLogger.staticStep('Using cached healed locator', { locator: cached.healedLocator });
         this.healedSelector = cached.healedLocator;
         return cached.healedLocator;
       }
@@ -118,12 +118,12 @@ export class SelfHealingLocator {
       const stillValid = await this.validateOnPage(cached.healedLocator);
       this.store.markValidated(this.originalSelector);
       if (stillValid) {
-        TestLogger.staticDebug(`Cached locator still valid: ${cached.healedLocator}`);
+        TestLogger.staticStep('Cached locator still valid', { locator: cached.healedLocator });
         this.healedSelector = cached.healedLocator;
         return cached.healedLocator;
       }
 
-      TestLogger.staticDebug(`Cached locator stale, re-healing: ${this.originalSelector}`);
+      TestLogger.staticStep('Cached locator stale, re-healing', { locator: this.originalSelector });
       this.store.remove(this.originalSelector);
     }
 
@@ -147,7 +147,15 @@ export class SelfHealingLocator {
         });
 
         this.store.markValidated(this.originalSelector);
-        TestLogger.staticDebug(`Healed locator: ${this.originalSelector} -> ${candidate.locator}`);
+        TestLogger.staticStep('Replacement locator selected', {
+          originalLocator: this.originalSelector,
+          replacementLocator: candidate.locator,
+          confidence: candidate.confidence,
+        });
+        TestLogger.staticStep('Healed locator', {
+          originalLocator: this.originalSelector,
+          replacementLocator: candidate.locator,
+        });
 
         if (SOURCE_PATCH_ENABLED) {
           await this.patchSourceFile(candidate.locator);
