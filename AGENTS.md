@@ -94,38 +94,6 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 
 Check existing code before writing new code. Reuse and extend before creating. If a pattern already exists—same logic, same selector, same helper—use it rather than duplicating it. Extract shared logic into utilities or factories when you find yourself repeating yourself.
 
-## Code Style
-
-### Python Best Practices
-
-#### Formatting
-- Follow PEP 8 — 4-space indentation, 79-char line limit
-- Use `black` for formatting, `isort` for imports
-
-#### Naming
-- `snake_case` for variables/functions, `PascalCase` for classes, `UPPER_CASE` for constants
-- Descriptive names — `user_count` not `n`
-
-#### Types
-- Type hint all function signatures
-```python
-  def get_user(user_id: int) -> dict[str, str]:
-```
-
-#### Functions
-- One function = one responsibility
-- Keep functions short and focused
-
-#### Error Handling
-- Catch specific exceptions, never bare `except:`
-- Use `with` statements for resource cleanup
-
-#### Patterns
-- Prefer comprehensions over `map`/`filter`
-- Use generators for large datasets
-
-**Code readability priority** — Favor clarity and intent-revealing code over brevity or cleverness. Use descriptive names, avoid deeply nested logic, extract meaningful helper functions, and keep functions focused on a single responsibility. Readability is the default; optimize for the next reader, not the writer.
-
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.

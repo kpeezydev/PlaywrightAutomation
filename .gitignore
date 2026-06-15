@@ -50,6 +50,9 @@ openspec/
 # Opencode
 .opencode/
 
+# Copilot
+.github/copilot-instructions.md
+
 # Playwight
 .playwright-cli/
 

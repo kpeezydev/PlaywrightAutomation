@@ -27,8 +27,8 @@ npm run test:ui
 
 | Path                       | Purpose                                              |
 | -------------------------- | ---------------------------------------------------- |
-| `tests/UI/`                | Browser E2E tests + BDD feature files against SauceDemo                  |
-| `tests/API/`               | API tests + BDD feature files against DummyJSON                          |
+| `tests/feature/UI/`        | Browser E2E tests + BDD feature files against SauceDemo                  |
+| `tests/feature/API/`       | API tests + BDD feature files against DummyJSON                          |
 | `tests/playwright/API/`    | Auto-generated Playwright spec files from API BDD features (gitignored)  |
 | `tests/playwright/UI/`     | Auto-generated Playwright spec files from UI BDD features (gitignored)   |
 | `steps/`                   | BDD step definitions + shared fixtures               |
@@ -36,6 +36,8 @@ npm run test:ui
 | `utils/`                   | ApiClient wrapper, Winston-based TestLogger          |
 | `test-data/`               | Factory classes + shared constants and URLs          |
 | `allure-results/`          | Raw Allure test results (generated, gitignored)      |
+| `allure-report/`           | Generated Allure HTML report (gitignored)            |
+| `report_<timestamp>/`      | Generated Allure HTML report from local scripts      |
 
 ## Available Commands
 
@@ -53,6 +55,7 @@ npm run test:ui
 | `npm run lint`             | Run ESLint checks                                    |
 | `npm run lint:fix`         | Fix auto-fixable lint issues                         |
 | `npm run format`           | Format code with Prettier                            |
+| `npx playwright test -g`   | Run specs matching a grep pattern                    |
 
 ## BDD Tests
 
@@ -63,9 +66,9 @@ This project uses [playwright-bdd](https://vitalets.github.io/playwright-bdd/) t
 - Generated test files: `playwright/API/` and `playwright/UI/` (auto-generated, gitignored)
 
 To add a new BDD scenario:
-1. Create a `.feature` file under `tests/API/` or `tests/UI/`
+1. Create a `.feature` file under `tests/feature/API/` or `tests/feature/UI/`
 2. Create or update a `.steps.ts` file in `steps/` with matching step definitions
-3. Run `npx bddgen test` to regenerate test files, then `npm run test:bdd` to verify
+3. Run `npm run test:bdd` to verify (test files are auto-generated on run)
 
 ## CI/CD
 
