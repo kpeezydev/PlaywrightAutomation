@@ -122,7 +122,7 @@ export class TestLogger {
     );
   }
 
-  private static staticError(message: string, error?: unknown, testName?: string): void {
+  static staticError(message: string, error?: unknown, testName?: string): void {
     if (error instanceof Error) {
       logger.error(`[ERR]${TestLogger.ctx(testName)}${message}`, {
         error: error.message,
@@ -136,7 +136,7 @@ export class TestLogger {
     }
   }
 
-  private static staticDebug(
+  static staticDebug(
     message: string,
     data?: Record<string, unknown>,
     testName?: string,

@@ -33,6 +33,8 @@ jobs:
         run: npx bddgen
       - name: Run Playwright tests
         run: npm test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - name: Generate Allure HTML report
         if: always()
         run: npx allure-commandline generate allure-results --clean -o allure-report
@@ -53,6 +55,13 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 7
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: healing-store
+          path: healing-store.json
+          if-no-files-found: ignore
           retention-days: 7
 
   deploy:

@@ -15,6 +15,7 @@ export const API_TEST_USERS = {
     username: 'emilys',
     password: 'emilyspass',
   },
+  INVALID_PASSWORD: 'wrongpassword',
 };
 
 export const TEST_DATA = {

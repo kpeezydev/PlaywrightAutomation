@@ -15,7 +15,8 @@
     "allure:report": "node scripts/generate-allure-report.js && node scripts/open-latest-allure-report.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "healing:status": "node -e \"const fs=require('fs');const p='healing-store.json';console.log(fs.existsSync(p)?JSON.parse(fs.readFileSync(p,'utf-8')):'No healing-store.json found');\""
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
@@ -31,5 +32,9 @@
     "prettier": "^3.2.5",
     "typescript": "^6.0.3",
     "winston": "^3.19.0"
+  },
+  "dependencies": {
+    "@google/genai": "^2.8.0",
+    "dotenv": "^16.6.1"
   }
 }

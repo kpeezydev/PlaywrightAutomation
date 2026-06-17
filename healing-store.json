@@ -1,0 +1,9 @@
+[
+  {
+    "originalLocator": "[data-test=\"xxxxx\"]",
+    "healedLocator": "[data-test=\"username\"]",
+    "pageUrl": "https://www.saucedemo.com/",
+    "confidence": 1,
+    "timestamp": "2026-06-14T06:14:10.018Z"
+  }
+]
