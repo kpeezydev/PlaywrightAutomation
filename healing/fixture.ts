@@ -2,6 +2,7 @@ import { test as base, Page } from '@playwright/test';
 import { HealingStore } from './store';
 import { AiLocatorService } from './ai-service';
 import { SelfHealingLocator } from './locator';
+import { LocatorContext } from './types';
 
 type HealingFixtures = {
   healingStore: HealingStore;
@@ -40,6 +41,7 @@ export function createHealingLocator(
   selector: string,
   store: HealingStore,
   aiService: AiLocatorService,
+  context?: LocatorContext,
 ): SelfHealingLocator {
-  return new SelfHealingLocator(page, selector, store, aiService);
+  return new SelfHealingLocator(page, selector, store, aiService, context);
 }

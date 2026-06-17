@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { HealingStore } from './store';
 import { AiLocatorService } from './ai-service';
+import { LocatorContext } from './types';
 import { TestLogger } from '@/utils/logger';
 
 const HEALING_ENABLED = process.env.HEALING_ENABLED !== 'false';
@@ -13,13 +14,31 @@ export class SelfHealingLocator {
   private readonly originalSelector: string;
   private readonly store: HealingStore;
   private readonly aiService: AiLocatorService;
+  private readonly context: LocatorContext;
   private healedSelector: string | null = null;
 
-  constructor(page: Page, selector: string, store: HealingStore, aiService: AiLocatorService) {
+  private static _currentStepContext: string | null = null;
+
+  static set stepContext(value: string | null) {
+    SelfHealingLocator._currentStepContext = value;
+  }
+
+  static get stepContext(): string | null {
+    return SelfHealingLocator._currentStepContext;
+  }
+
+  constructor(
+    page: Page,
+    selector: string,
+    store: HealingStore,
+    aiService: AiLocatorService,
+    context: LocatorContext = {},
+  ) {
     this.page = page;
     this.originalSelector = selector;
     this.store = store;
     this.aiService = aiService;
+    this.context = context;
   }
 
   private get currentLocator(): Locator {
@@ -127,10 +146,16 @@ export class SelfHealingLocator {
       this.store.remove(this.originalSelector);
     }
 
+    const contextWithStep: LocatorContext = {
+      ...this.context,
+      stepContext: this.context.stepContext ?? SelfHealingLocator._currentStepContext ?? undefined,
+    };
+
     const pageHtml = await this.page.content();
     const candidates = await this.aiService.findReplacementLocators(
       pageHtml,
       this.originalSelector,
+      contextWithStep,
     );
 
     for (const candidate of candidates) {

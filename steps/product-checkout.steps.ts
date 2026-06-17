@@ -1,23 +1,27 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '@/steps/fixtures.steps';
+import { SelfHealingLocator } from '@/healing';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { CheckoutDataFactory, ApiTestDataFactory, UrlFactory } from '@/test-data/factories';
 import { TestLogger } from '@/utils/logger';
 import { apiRequest } from '@/utils/api-helper';
 
 Given('I am authenticated on saucedemo', async ({ authenticatedPage, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I am authenticated on saucedemo';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Verifying authenticated session on sauce demo');
   await expect(authenticatedPage).toHaveURL(/inventory\.html$/);
 });
 
 When('I add a product to the cart', async ({ authenticatedPage, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I add a product to the cart';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Adding sauce-labs-backpack to cart');
   await authenticatedPage.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
 });
 
 When('I proceed to checkout', async ({ authenticatedPage, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I proceed to checkout';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Opening cart and proceeding to checkout');
   await authenticatedPage.locator('.shopping_cart_link').click();
@@ -25,6 +29,7 @@ When('I proceed to checkout', async ({ authenticatedPage, $testInfo }) => {
 });
 
 When('I fill in checkout information', async ({ authenticatedPage, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I fill in checkout information';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Filling in checkout information form');
   const checkoutPage = new CheckoutPage(authenticatedPage);
@@ -36,6 +41,7 @@ When('I fill in checkout information', async ({ authenticatedPage, $testInfo }) 
 });
 
 When('I complete the order', async ({ authenticatedPage, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I complete the order';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Completing the order');
   const checkoutPage = new CheckoutPage(authenticatedPage);
@@ -43,6 +49,7 @@ When('I complete the order', async ({ authenticatedPage, $testInfo }) => {
 });
 
 Then('I should see the order confirmation message', async ({ authenticatedPage, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I should see the order confirmation message';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Verifying order confirmation message');
   const checkoutPage = new CheckoutPage(authenticatedPage);

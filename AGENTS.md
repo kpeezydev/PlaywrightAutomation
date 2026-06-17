@@ -2,65 +2,6 @@
 
 > **For human onboarding, see [`README.md`](./README.md).** This file targets AI coding agents.
 
-## Project
-
-Single-package Playwright test project. No monorepo. No framework scaffolding beyond `@playwright/test` + TypeScript.
-
-## Directory map
-
-| Path                       | Purpose                                                                                              |
-| -------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `tests/feature/UI/`        | Browser E2E tests + BDD feature files against https://www.saucedemo.com                              |
-| `tests/feature/API/`       | API tests + BDD feature files against https://dummyjson.com                                          |
-| `tests/playwright/API/`          | Auto-generated Playwright spec files from API BDD features (gitignored)                              |
-| `tests/playwright/UI/`           | Auto-generated Playwright spec files from UI BDD features (gitignored)                               |
-| `steps/`                   | Step definition files (`*.steps.ts`) + shared BDD fixtures (`fixtures.steps.ts`)                     |
-| `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, etc)                                             |
-| `utils/`                   | `ApiClient` (Playwright `APIRequestContext` wrapper), `logger` (Winston-based `TestLogger`)          |
-| `test-data/`               | Factory classes (`UserFactory`, `CheckoutDataFactory`, `ApiTestDataFactory`) + shared constants/URLs |
-| `allure-results/`  | Raw Allure test result files (gitignored, generated on every run) |
-| `allure-report/` | Generated Allure HTML report in CI (gitignored, created by `npx allure generate` in GitHub Actions) |
-| `report_<timestamp>/` | Generated Allure HTML report (gitignored, created by `scripts/generate-allure-report.js`) |
-
-## Commands
-
-```bash
-npm test                         # runs all UI + API specs (legacy + BDD)
-npm run test:ui                  # interactive UI mode
-npm run test:bdd                 # runs only BDD tests (--project=bdd)
-npm run test:bdd:ui              # interactive UI mode for BDD tests
-npm run test:bdd:grep            # BDD tests matching a grep pattern (e.g., npm run test:bdd:grep -- "Login")
-npm run test:allure              # runs tests + auto-generates Allure report (report_<timestamp>)
-npm run allure:generate          # generate Allure HTML report from allure-results/ (report_<timestamp>)
-npm run allure:open              # open the latest report_* directory in browser
-npm run allure:report            # generate + open (convenience shortcut)
-npx playwright test -g "Login"   # run specs matching a grep pattern
-npm run lint                     # eslint (.eslintrc.js, strict via tsconfig)
-npm run lint:fix                 # eslint --fix
-npm run format                   # prettier --write .
-```
-
-> Run lint/format with `npm run…`. Running `npx playwright…` directly bypasses nothing but is fine for ad-hoc execution.
-> Allure CLI requires Java 8+ (JRE) to be installed on the system. Report generation scripts depend on it.
-> Report generation uses `scripts/generate-allure-report.js`; opening the latest uses `scripts/open-latest-allure-report.js`.
-
-## Path alias
-
-`tsconfig.json` maps `@/*` → `./*`. All internal imports use this alias (e.g. `@/pages/LoginPage`). Keep it; Playwright and ts-node resolve it via the config file at the project root.
-
-## Test target
-
-- **UI tests**: `baseURL = https://www.saucedemo.com` is set in `playwright.config.ts`. Page objects call `page.goto('/')` — do not hardcode the full URL in page objects.
-- **API tests**: Use `@playwright/test` `request` fixture + `utils/ApiClient`. Bypasses `baseURL`; construct full URLs in the test or via `UrlFactory`.
-
-## Fixtures
-
-`fixtures/auth.fixture.ts` extends Playwright's base test with `authenticatedPage`. A test using this fixture starts already logged in as `standard_user / secret_sauce` (URL confirmed at `inventory.html`). Use the fixture name `authenticatedPage` instead of rolling your own login in the test body.
-
-## Test data
-
-All credentials and payloads live in `test-data/constants.ts`. Tests import from factory classes in `test-data/factories.ts`. Do not embed literal credentials inline in spec files.
-
 ## Keeping these files current
 
 When you add a new directory, page object, fixture, utility, factory, or any other significant structure, update this file — especially the **Directory map** section. If purpose or location changes, keep it in sync so agents always have an accurate project map.

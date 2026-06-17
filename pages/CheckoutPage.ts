@@ -12,11 +12,11 @@ export class CheckoutPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.firstNameInput = healingLocator(page, '[data-test="firstName"]');
-    this.lastNameInput = healingLocator(page, '[data-test="lastName"]');
-    this.postalCodeInput = healingLocator(page, '[data-test="postalCode"]');
-    this.continueButton = healingLocator(page, '[data-test="continue"]');
-    this.finishButton = healingLocator(page, '[data-test="finish"]');
+    this.firstNameInput = healingLocator(page, '[data-test="firstName"]', { elementContext: 'first name input' });
+    this.lastNameInput = healingLocator(page, '[data-test="lastName"]', { elementContext: 'last name input' });
+    this.postalCodeInput = healingLocator(page, '[data-test="postalCode"]', { elementContext: 'postal code input' });
+    this.continueButton = healingLocator(page, '[data-test="continue"]', { elementContext: 'continue button' });
+    this.finishButton = healingLocator(page, '[data-test="finish"]', { elementContext: 'finish button' });
     this.completeHeader = page.locator('.complete-header');
   }
 

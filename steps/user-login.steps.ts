@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { Given, When, Then } from '@/steps/fixtures.steps';
+import { SelfHealingLocator } from '@/healing';
 import { LoginPage } from '@/pages/LoginPage';
 import { UserFactory, UrlFactory } from '@/test-data/factories';
 import { API_TEST_USERS } from '@/test-data/constants';
@@ -7,6 +8,7 @@ import { TestLogger } from '@/utils/logger';
 import { apiRequest } from '@/utils/api-helper';
 
 Given('I am on the login page', async ({ page, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I am on the login page';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Navigating to login page');
   const loginPage = new LoginPage(page);
@@ -14,6 +16,7 @@ Given('I am on the login page', async ({ page, $testInfo }) => {
 });
 
 When('I enter valid credentials', async ({ page, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I enter valid credentials';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Entering valid credentials');
   const loginPage = new LoginPage(page);
@@ -22,6 +25,7 @@ When('I enter valid credentials', async ({ page, $testInfo }) => {
 });
 
 When('I enter locked-out user credentials', async ({ page, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I enter locked-out user credentials';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Entering locked-out user credentials');
   const loginPage = new LoginPage(page);
@@ -30,6 +34,7 @@ When('I enter locked-out user credentials', async ({ page, $testInfo }) => {
 });
 
 When('I click the login button', async ({ page, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I click the login button';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Clicking login button');
   const loginPage = new LoginPage(page);
@@ -37,6 +42,7 @@ When('I click the login button', async ({ page, $testInfo }) => {
 });
 
 Then('I should be redirected to the inventory page', async ({ page, $testInfo }) => {
+  SelfHealingLocator.stepContext = 'I should be redirected to the inventory page';
   const log = TestLogger.forTest($testInfo.title);
   log.step('Verifying redirect to inventory page');
   await expect(page).toHaveURL(/inventory\.html$/);
@@ -45,6 +51,7 @@ Then('I should be redirected to the inventory page', async ({ page, $testInfo })
 Then(
   'I should see an error message indicating the user has been locked out',
   async ({ page, $testInfo }) => {
+    SelfHealingLocator.stepContext = 'I should see an error message indicating the user has been locked out';
     const log = TestLogger.forTest($testInfo.title);
     log.step('Verifying locked-out error message');
     const loginPage = new LoginPage(page);

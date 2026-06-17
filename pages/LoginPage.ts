@@ -10,9 +10,9 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameInput = healingLocator(page, '[data-test="xxxxx"]');
-    this.passwordInput = healingLocator(page, '[data-test="password"]');
-    this.loginButton = healingLocator(page, '[data-test="login-button"]');
+    this.usernameInput = healingLocator(page, '[data-test="password1"]', { elementContext: 'username input box' });
+    this.passwordInput = healingLocator(page, '[data-test="username1"]', { elementContext: 'password input box' });
+    this.loginButton = healingLocator(page, '[data-test="login-button"]', { elementContext: 'login button' });
     this.errorMessage = page.locator('[data-test="error"]');
   }
 
