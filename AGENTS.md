@@ -35,6 +35,22 @@ The workflow at `.github/workflows/playwright.yml` runs on push, pull request, a
 
 Check existing code before writing new code. Reuse and extend before creating. If a pattern already exists—same logic, same selector, same helper—use it rather than duplicating it. Extract shared logic into utilities or factories when you find yourself repeating yourself.
 
+## Skill selection
+
+Before starting any task, load the relevant skill(s) based on intent:
+
+| Intent | Skill |
+|---|---|
+| Any codebase question — use graphify first if graph exists | `graphify` |
+| Playwright tests, page objects, fixtures, or browser interactions | `playwright-bdd`, `playwright-best-practices`, `playwright-cli` |
+| TypeScript types, generics, or type-level utilities | `typescript-advanced-types` |
+| GitHub Actions workflows or CI/CD | `github-actions-docs` |
+| SonarQube / SonarCloud quality gates or issues | `sonarqube-mcp` |
+| General code refactoring, new feature, or significant change | `playwright-bdd` (if behavior changes), `typescript-advanced-types` (if type work) |
+
+
+When multiple skills match, load all that apply.
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
