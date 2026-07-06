@@ -64,9 +64,35 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  deploy:
+  raise-prs:
     if: github.event_name != 'pull_request' && always()
     needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - uses: actions/download-artifact@v6
+        with:
+          name: healing-store
+      - name: Raise PRs for healed locators
+        run: npx tsx healing/pr-manager.ts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEALING_RAISE_PR: "true"
+
+  deploy:
+    if: github.event_name != 'pull_request' && always()
+    needs: [test, raise-prs]
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -10,6 +10,9 @@ export interface HealingEntry {
   confidence: number;
   timestamp: string;
   context?: LocatorContext;
+  sourceFile?: string;
+  prUrl?: string;
+  prBranch?: string;
 }
 
 export interface LocatorCandidate {

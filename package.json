@@ -16,7 +16,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
-    "healing:status": "node -e \"const fs=require('fs');const p='healing-store.json';console.log(fs.existsSync(p)?JSON.parse(fs.readFileSync(p,'utf-8')):'No healing-store.json found');\""
+    "healing:status": "node -e \"const fs=require('fs');const p='healing-store.json';console.log(fs.existsSync(p)?JSON.parse(fs.readFileSync(p,'utf-8')):'No healing-store.json found');\"",
+    "healing:raise-prs": "npx tsx healing/pr-manager.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",

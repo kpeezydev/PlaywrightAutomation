@@ -5,24 +5,26 @@ import { TestLogger } from '@/utils/logger';
 const PAGES_DIR = path.resolve(process.cwd(), 'pages');
 
 export class SourcePatcher {
-  async patch(originalLocator: string, healedLocator: string): Promise<void> {
+  async patch(originalLocator: string, healedLocator: string): Promise<string | null> {
     const files = this.findPageFiles();
-    let patchedCount = 0;
+    let patchedPath: string | null = null;
 
     for (const filePath of files) {
       const updated = this.patchFile(filePath, originalLocator, healedLocator);
       if (updated) {
-        patchedCount++;
+        if (!patchedPath) {
+          patchedPath = filePath;
+        }
       }
     }
 
-    if (patchedCount === 0) {
+    if (!patchedPath) {
       TestLogger.staticDebug(`No page files matched locator "${originalLocator}" for patching`);
     } else {
-      TestLogger.staticDebug(
-        `Patched ${patchedCount} file(s): ${originalLocator} -> ${healedLocator}`,
-      );
+      TestLogger.staticDebug(`Patched: ${originalLocator} -> ${healedLocator} in ${patchedPath}`);
     }
+
+    return patchedPath;
   }
 
   private findPageFiles(): string[] {

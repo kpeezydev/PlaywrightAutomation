@@ -163,12 +163,17 @@ export class SelfHealingLocator {
       if (isValid) {
         this.healedSelector = candidate.locator;
 
+        const sourceFile: string | null = SOURCE_PATCH_ENABLED
+          ? await this.patchSourceFile(candidate.locator)
+          : null;
+
         this.store.set({
           originalLocator: this.originalSelector,
           healedLocator: candidate.locator,
           pageUrl: this.page.url(),
           confidence: candidate.confidence,
           timestamp: new Date().toISOString(),
+          sourceFile: sourceFile ?? undefined,
         });
 
         this.store.markValidated(this.originalSelector);
@@ -181,10 +186,6 @@ export class SelfHealingLocator {
           originalLocator: this.originalSelector,
           replacementLocator: candidate.locator,
         });
-
-        if (SOURCE_PATCH_ENABLED) {
-          await this.patchSourceFile(candidate.locator);
-        }
 
         return candidate.locator;
       }
@@ -202,13 +203,14 @@ export class SelfHealingLocator {
     }
   }
 
-  private async patchSourceFile(newSelector: string): Promise<void> {
+  private async patchSourceFile(newSelector: string): Promise<string | null> {
     try {
       const { SourcePatcher } = await import('./source-patcher');
       const patcher = new SourcePatcher();
-      await patcher.patch(this.originalSelector, newSelector);
+      return await patcher.patch(this.originalSelector, newSelector);
     } catch (err) {
       TestLogger.staticError('Source file patching failed', err);
+      return null;
     }
   }
 }
