@@ -83,7 +83,7 @@ export class PrManager {
 
       log(`Creating local tracking branch for ${this.baseBranch}...`);
       this.exec(`git fetch origin ${this.baseBranch} 2>&1`);
-      this.exec(`git checkout -b ${this.baseBranch} origin/${this.baseBranch} 2>&1`);
+      this.exec(`git checkout -B ${this.baseBranch} origin/${this.baseBranch} 2>&1`);
 
       log(`Creating branch ${branchName}...`);
       this.exec(`git checkout -b ${branchName}`);
@@ -108,7 +108,9 @@ export class PrManager {
       log(`Pushing branch ${branchName}...`);
       this.exec(`git push origin ${branchName} 2>&1`);
 
-      const title = `fix: heal locator ${entry.originalLocator} -> ${entry.healedLocator}`;
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const elementName = entry.context?.elementContext ?? entry.originalLocator;
+      const title = `fix: heal ${elementName} - ${dateStr}`;
       const body = this.buildPrBody(entry);
       const bodyFile = path.resolve(
         process.cwd(),
