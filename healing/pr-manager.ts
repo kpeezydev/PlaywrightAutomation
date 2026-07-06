@@ -108,9 +108,7 @@ export class PrManager {
       log(`Pushing branch ${branchName}...`);
       this.exec(`git push origin ${branchName} 2>&1`);
 
-      const dateStr = new Date().toISOString().slice(0, 10);
-      const elementName = entry.context?.elementContext ?? entry.originalLocator;
-      const title = `fix: heal ${elementName} - ${dateStr}`;
+      const title = `fix: heal locator ${entry.originalLocator} -> ${entry.healedLocator}`;
       const body = this.buildPrBody(entry);
       const bodyFile = path.resolve(
         process.cwd(),
