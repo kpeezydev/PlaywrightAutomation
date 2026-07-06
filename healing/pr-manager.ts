@@ -222,3 +222,8 @@ export async function run(): Promise<void> {
   const manager = new PrManager(store);
   await manager.processAll();
 }
+
+run().catch((err) => {
+  console.error('[PrManager] Fatal error:', err);
+  process.exit(1);
+});
