@@ -8,9 +8,21 @@ import { TestLogger } from '@/utils/logger';
 
 const STORE_FILE = path.resolve(process.cwd(), 'healing-store.json');
 
+function log(msg: string): void {
+  console.log(`[PrManager] ${msg}`);
+  TestLogger.staticDebug(msg);
+}
+
+function logError(msg: string, err?: unknown): void {
+  const detail = err instanceof Error ? err.message : String(err ?? '');
+  console.error(`[PrManager] ERROR: ${msg}${detail ? ` — ${detail}` : ''}`);
+  TestLogger.staticError(msg, err);
+}
+
 export class PrManager {
   private readonly store: HealingStore;
   private readonly baseBranch: string;
+  private gitConfigured = false;
 
   constructor(store: HealingStore, options?: { baseBranch?: string }) {
     this.store = store;
@@ -19,18 +31,18 @@ export class PrManager {
 
   async processAll(): Promise<void> {
     if (process.env.HEALING_RAISE_PR !== 'true') {
-      TestLogger.staticDebug('PrManager: HEALING_RAISE_PR not set to true. Skipping.');
+      log('HEALING_RAISE_PR not set to true. Skipping.');
       return;
     }
 
     const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
     if (!token) {
-      TestLogger.staticDebug('PrManager: No GH_TOKEN or GITHUB_TOKEN found. Skipping.');
+      log('No GH_TOKEN or GITHUB_TOKEN found. Skipping.');
       return;
     }
 
     if (!fs.existsSync(STORE_FILE)) {
-      TestLogger.staticDebug('PrManager: No healing-store.json found. Nothing to process.');
+      log('No healing-store.json found. Nothing to process.');
       return;
     }
 
@@ -39,45 +51,61 @@ export class PrManager {
     const pending = entries.filter((e) => !e.prUrl);
 
     if (pending.length === 0) {
-      TestLogger.staticDebug('PrManager: No pending healings to PR.');
+      log('No pending healings to PR.');
       return;
     }
+
+    log(`Found ${pending.length} pending healing(s). Starting PR creation...`);
 
     for (const entry of pending) {
       await this.raisePr(entry);
     }
   }
 
+  private async ensureGitConfigured(): Promise<void> {
+    if (this.gitConfigured) return;
+    try {
+      this.exec(`git config user.name "playwright-automation-heal"`);
+      this.exec(`git config user.email "playwright-automation-heal@users.noreply.github.com"`);
+      this.gitConfigured = true;
+    } catch (err) {
+      logError('Failed to configure git user', err);
+      throw err;
+    }
+  }
+
   private async raisePr(entry: HealingEntry): Promise<void> {
     const branchName = this.buildBranchName(entry);
+    log(`Processing: ${entry.originalLocator} -> ${entry.healedLocator} (branch: ${branchName})`);
 
     try {
-      TestLogger.staticDebug(
-        `PrManager: Creating PR for ${entry.originalLocator} -> ${entry.healedLocator}`,
-      );
+      await this.ensureGitConfigured();
 
-      this.exec(`git checkout ${this.baseBranch}`);
-      this.exec(`git pull origin ${this.baseBranch} 2>/dev/null || true`);
+      log(`Creating local tracking branch for ${this.baseBranch}...`);
+      this.exec(`git fetch origin ${this.baseBranch} 2>&1`);
+      this.exec(`git checkout -b ${this.baseBranch} origin/${this.baseBranch} 2>&1`);
+
+      log(`Creating branch ${branchName}...`);
       this.exec(`git checkout -b ${branchName}`);
 
       const sourcePatcher = new SourcePatcher();
       const patchedFile = await sourcePatcher.patch(entry.originalLocator, entry.healedLocator);
 
       if (!patchedFile) {
-        TestLogger.staticDebug(
-          `PrManager: No source file matched for ${entry.originalLocator}. Skipping PR.`,
-        );
-        this.exec(`git checkout ${this.baseBranch}`);
-        this.exec(`git branch -D ${branchName}`);
+        log(`No source file matched for ${entry.originalLocator}. Skipping PR.`);
+        this.exec(`git checkout ${this.baseBranch} 2>&1`);
+        this.exec(`git branch -D ${branchName} 2>&1`);
         return;
       }
 
       const relativePath = path.relative(process.cwd(), patchedFile);
+      log(`Patching ${relativePath}...`);
       this.exec(`git add "${relativePath}"`);
       this.exec(
         `git commit -m "fix: heal locator ${entry.originalLocator} -> ${entry.healedLocator}"`,
       );
 
+      log(`Pushing branch ${branchName}...`);
       this.exec(`git push origin ${branchName} 2>&1`);
 
       const title = `fix: heal locator ${entry.originalLocator} -> ${entry.healedLocator}`;
@@ -88,6 +116,7 @@ export class PrManager {
       );
       fs.writeFileSync(bodyFile, body, 'utf-8');
 
+      log('Creating draft PR...');
       const prUrl = this.exec(
         `gh pr create --base ${this.baseBranch} --head ${branchName} --title "${title}" --body-file "${bodyFile}" --draft`,
       );
@@ -99,9 +128,9 @@ export class PrManager {
       entry.prBranch = branchName;
       this.persistEntry(entry);
 
-      TestLogger.staticDebug(`PrManager: PR created: ${trimmedUrl}`);
+      log(`PR created: ${trimmedUrl}`);
     } catch (err) {
-      TestLogger.staticError(`PrManager: Failed to create PR for ${entry.originalLocator}`, err);
+      logError(`Failed to create PR for ${entry.originalLocator}`, err);
     }
   }
 
@@ -164,7 +193,11 @@ export class PrManager {
   }
 
   private exec(cmd: string): string {
-    return execSync(cmd, { encoding: 'utf-8', cwd: process.cwd() }).trim();
+    return execSync(cmd, {
+      encoding: 'utf-8',
+      cwd: process.cwd(),
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim();
   }
 
   private persistEntry(entry: HealingEntry): void {
