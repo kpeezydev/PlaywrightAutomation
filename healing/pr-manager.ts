@@ -106,7 +106,7 @@ export class PrManager {
       );
 
       log(`Pushing branch ${branchName}...`);
-      this.exec(`git push origin ${branchName} 2>&1`);
+      this.execWithRemoteToken(`push origin ${branchName}`);
 
       const title = `fix: heal locator ${entry.originalLocator} -> ${entry.healedLocator}`;
       const body = this.buildPrBody(entry);
@@ -198,6 +198,44 @@ export class PrManager {
       cwd: process.cwd(),
       stdio: ['pipe', 'pipe', 'pipe'],
     }).trim();
+  }
+
+  private execWithRemoteToken(gitArgs: string): string {
+    const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
+    if (!token) {
+      throw new Error('GH_TOKEN/GITHUB_TOKEN is required to push branches');
+    }
+    const repoSlug = this.exec('git config --get remote.origin.url')
+      .replace(/^https:\/\/github\.com\//, '')
+      .replace(/\.git$/, '');
+    const authedUrl = `https://x-access-token:${token}@github.com/${repoSlug}.git`;
+    try {
+      return execSync(`git ${gitArgs}`, {
+        encoding: 'utf-8',
+        cwd: process.cwd(),
+        stdio: ['pipe', 'pipe', 'pipe'],
+        env: {
+          ...process.env,
+          GIT_ASKPASS: undefined,
+          GIT_TERMINAL_PROMPT: '0',
+        },
+      })
+        .trim();
+    } catch (err) {
+      if (err instanceof Error) {
+        const stderr =
+          // @ts-expect-error - execSync populates stderr on ChildProcessError
+          typeof err.stderr === 'string' ? err.stderr : '';
+        const stdout =
+          // @ts-expect-error - execSync populates stdout on ChildProcessError
+          typeof err.stdout === 'string' ? err.stdout : '';
+        const detail = [stderr.trim(), stdout.trim()].filter(Boolean).join(' | ');
+        throw new Error(
+          `git ${gitArgs} failed${detail ? `: ${detail}` : ''} (url=https://github.com/${repoSlug}.git)`,
+        );
+      }
+      throw err;
+    }
   }
 
   private persistEntry(entry: HealingEntry): void {
