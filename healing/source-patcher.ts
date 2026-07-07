@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { TestLogger } from '@/utils/logger';
 
 const PAGES_DIR = path.resolve(process.cwd(), 'pages');
@@ -18,10 +18,10 @@ export class SourcePatcher {
       }
     }
 
-    if (!patchedPath) {
-      TestLogger.staticDebug(`No page files matched locator "${originalLocator}" for patching`);
-    } else {
+    if (patchedPath) {
       TestLogger.staticDebug(`Patched: ${originalLocator} -> ${healedLocator} in ${patchedPath}`);
+    } else {
+      TestLogger.staticDebug(`No page files matched locator "${originalLocator}" for patching`);
     }
 
     return patchedPath;
@@ -59,6 +59,6 @@ export class SourcePatcher {
   }
 
   private escapeForRegex(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return str.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
   }
 }

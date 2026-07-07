@@ -14,8 +14,16 @@ function log(msg: string): void {
 }
 
 function logError(msg: string, err?: unknown): void {
-  const detail = err instanceof Error ? err.message : String(err ?? '');
-  console.error(`[PrManager] ERROR: ${msg}${detail ? ` — ${detail}` : ''}`);
+  let detail: string;
+  if (err instanceof Error) {
+    detail = err.message;
+  } else if (typeof err === 'string') {
+    detail = err;
+  } else {
+    detail = JSON.stringify(err) ?? '';
+  }
+  const suffix = detail ? ` — ${detail}` : '';
+  console.error(`[PrManager] ERROR: ${msg}${suffix}`);
   TestLogger.staticError(msg, err);
 }
 
@@ -186,7 +194,7 @@ export class PrManager {
   private simpleHash(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
+      const char = str.codePointAt(i) ?? 0;
       hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
@@ -209,7 +217,6 @@ export class PrManager {
     const repoSlug = this.exec('git config --get remote.origin.url')
       .replace(/^https:\/\/github\.com\//, '')
       .replace(/\.git$/, '');
-    const authedUrl = `https://x-access-token:${token}@github.com/${repoSlug}.git`;
     try {
       return execSync(`git ${gitArgs}`, {
         encoding: 'utf-8',
@@ -231,8 +238,9 @@ export class PrManager {
           // @ts-expect-error - execSync populates stdout on ChildProcessError
           typeof err.stdout === 'string' ? err.stdout : '';
         const detail = [stderr.trim(), stdout.trim()].filter(Boolean).join(' | ');
+        const reason = detail ? `: ${detail}` : '';
         throw new Error(
-          `git ${gitArgs} failed${detail ? `: ${detail}` : ''} (url=https://github.com/${repoSlug}.git)`,
+          `git ${gitArgs} failed${reason} (url=https://github.com/${repoSlug}.git)`,
         );
       }
       throw err;
