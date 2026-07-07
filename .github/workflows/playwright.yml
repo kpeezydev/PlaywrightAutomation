@@ -87,7 +87,7 @@ jobs:
       - name: Raise PRs for healed locators
         run: npx tsx healing/pr-manager.ts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           GH_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
           HEALING_RAISE_PR: "true"
 
   deploy:
