@@ -106,7 +106,7 @@ export class PrManager {
       );
 
       log(`Pushing branch ${branchName}...`);
-      this.execWithRemoteToken(`push origin ${branchName}`);
+      this.execWithRemoteToken(`push --force origin ${branchName}`);
 
       const title = `fix: heal locator ${entry.originalLocator} -> ${entry.healedLocator}`;
       const body = this.buildPrBody(entry);
@@ -136,17 +136,18 @@ export class PrManager {
 
   private buildBranchName(entry: HealingEntry): string {
     const prefix = 'heal/auto';
+    const runId = process.env.GITHUB_RUN_ID ?? Date.now().toString(16);
     if (entry.context?.elementContext) {
       const sanitized = entry.context.elementContext
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
       if (sanitized.length > 0) {
-        return `${prefix}/${sanitized}`;
+        return `${prefix}/${sanitized}-${runId}`;
       }
     }
     const hash = this.simpleHash(entry.originalLocator);
-    return `${prefix}/${hash}`;
+    return `${prefix}/${hash}-${runId}`;
   }
 
   private buildPrBody(entry: HealingEntry): string {
