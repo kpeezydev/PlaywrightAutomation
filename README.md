@@ -32,9 +32,11 @@ npm run test:ui
 | `tests/playwright/API/`    | Auto-generated Playwright spec files from API BDD features (gitignored)  |
 | `tests/playwright/UI/`     | Auto-generated Playwright spec files from UI BDD features (gitignored)   |
 | `steps/`                   | BDD step definitions + shared fixtures               |
-| `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage)  |
-| `utils/`                   | ApiClient wrapper, Winston-based TestLogger          |
+| `pages/`                   | Page Object Model classes (LoginPage, CheckoutPage, LogoutPage)  |
+| `utils/`                   | ApiClient wrapper (`api-helper.ts`), Winston-based TestLogger  |
 | `test-data/`               | Factory classes + shared constants and URLs          |
+| `healing/`                 | Self-healing system: locator, AI service, store, source patcher, PR manager |
+| `scripts/`                 | Allure report generation + open helpers              |
 | `allure-results/`          | Raw Allure test results (generated, gitignored)      |
 | `allure-report/`           | Generated Allure HTML report (gitignored)            |
 | `report_<timestamp>/`      | Generated Allure HTML report from local scripts      |
@@ -70,7 +72,7 @@ Check these in order when a test fails:
 | What | Where | Why |
 |---|---|---|
 | **Allure report** | `npm run allure:report` | Steps, screenshots, parameters per scenario |
-| **Playwright trace** | `test-results/<name>-trace.zip` | Full step-by-step replay via `npx playwright show-trace` |
+| **Playwright trace** | `test-results/<name>-trace.zip` | Full step-by-step replay via `npx playwright show-trace` (captured on first retry) |
 | **Logs** | `logs/combined.log` / `logs/error.log` | Search for `[ERR]`, `[STEP]`, or the test name |
 | **Screenshots/videos** | `test-results/` | Visual evidence captured on failure |
 | **Healing store** | `healing-store.json` | Check `confidence` of healed locators |
@@ -107,27 +109,31 @@ Check these in order when a test fails:
 ### Modifying an existing locator
 - **Let self-healing handle it** — if the DOM changes, the AI finds a replacement automatically on next failure
 - To force re-healing: delete `healing-store.json`
+- To disable self-healing entirely: set `HEALING_ENABLED=false` in `.env` (locator failures become hard failures)
 - To auto-patch source files: set `HEALING_PATCH_SOURCE=true` in `.env` (healed selectors are written back to page object files)
+- To auto-raise PRs for healed locators in CI: set `HEALING_RAISE_PR=true` (used by the `raise-prs` GitHub Actions job)
 
 ### Configuration changes
 - **Timeouts, projects, retries** → `playwright.config.ts` at the project root
 - **CI/CD pipeline** → `.github/workflows/playwright.yml`
 - **TypeScript paths (`@/`)** → `tsconfig.json`
-- **Env vars** → Copy `.env.example` to `.env` and fill in values
+- **Env vars** → Copy `.env.example` to `.env` and fill in values (`GEMINI_API_KEY`, `HEALING_PATCH_SOURCE`, `HEALING_ENABLED`, `HEALING_RAISE_PR`)
 
 ## Available Commands
 
 | Command                    | Description                                          |
 | -------------------------- | ---------------------------------------------------- |
-| `npm test`                 | Run all UI and API tests (legacy + BDD)              |
+| `npm test`                 | Run all tests (bdd-api, bdd-ui, chromium projects)   |
 | `npm run test:ui`          | Open Playwright interactive UI mode                  |
-| `npm run test:bdd`         | Run only BDD tests (project filter)                  |
+| `npm run test:bdd`         | Run only BDD tests (bdd-api + bdd-ui projects)       |
 | `npm run test:bdd:ui`      | Open Playwright UI mode for BDD tests                |
 | `npm run test:bdd:grep`    | Run BDD tests matching a grep pattern                |
-| `npm run test:allure`      | Run tests and auto-generate Allure report            |
+| `npm run test:allure`      | Run all tests (alias for `npm test`)                 |
 | `npm run allure:generate`  | Generate Allure HTML report from latest results      |
 | `npm run allure:open`      | Open the latest Allure report in browser             |
 | `npm run allure:report`    | Generate and open Allure report (convenience)        |
+| `npm run healing:status`   | Print the contents of `healing-store.json`           |
+| `npm run healing:raise-prs`| Raise PRs for healed locators via `healing/pr-manager.ts` |
 | `npm run lint`             | Run ESLint checks                                    |
 | `npm run lint:fix`         | Fix auto-fixable lint issues                         |
 | `npm run format`           | Format code with Prettier                            |
@@ -139,7 +145,7 @@ This project uses [playwright-bdd](https://vitalets.github.io/playwright-bdd/) t
 
 - Feature files: `tests/feature/API/` and `tests/feature/UI/` organized by test type
 - Step definitions: `steps/` (`*.steps.ts`) that delegate to existing page objects, utilities, and factories
-- Generated test files: `playwright/API/` and `playwright/UI/` (auto-generated, gitignored)
+- Generated test files: `tests/playwright/API/` and `tests/playwright/UI/` (auto-generated, gitignored)
 
 To add a new BDD scenario:
 1. Create a `.feature` file under `tests/feature/API/` or `tests/feature/UI/`
@@ -148,12 +154,11 @@ To add a new BDD scenario:
 
 ## CI/CD
 
-Tests run automatically via **GitHub Actions** on every push and pull request. The workflow:
+Tests run automatically via **GitHub Actions** on every push, pull request, and manual dispatch (`workflow_dispatch`). The workflow runs three jobs:
 
-1. Runs all tests (UI + API) on `ubuntu-latest`
-2. Generates Allure HTML report from raw results
-3. Uploads `allure-results` and `allure-report` as build artifacts
-4. Deploys the Allure report to **GitHub Pages** with trend history preserved
+1. **test** — runs all tests (UI + API) on `ubuntu-latest`, generates the Allure HTML report, and uploads `allure-results`, `allure-report`, `playwright-report`, and `healing-store` as build artifacts
+2. **raise-prs** — downloads the `healing-store` artifact and runs `healing/pr-manager.ts` (when `HEALING_RAISE_PR=true`) to auto-raise PRs proposing healed-locator source patches; requires `GH_PAT` or `GITHUB_TOKEN`
+3. **deploy** — deploys the Allure report to **GitHub Pages** with trend history preserved
 
 ## AI Agent Context
 
