@@ -6,8 +6,8 @@ const DEFAULT_CONFIDENCE_THRESHOLD = 0.8;
 const GEMINI_MODEL = 'gemini-2.5-flash';
 
 export class AiLocatorService {
-  private client: GoogleGenAI;
-  private confidenceThreshold: number;
+  private readonly client: GoogleGenAI;
+  private readonly confidenceThreshold: number;
 
   constructor(confidenceThreshold = DEFAULT_CONFIDENCE_THRESHOLD) {
     const apiKey = process.env.GEMINI_API_KEY;
@@ -49,14 +49,15 @@ export class AiLocatorService {
   }
 
   private buildPrompt(pageHtml: string, brokenLocator: string, context?: LocatorContext): string {
-    const contextBlock = context
-      ? `
+    let contextBlock = '';
+    if (context) {
+      contextBlock = `
 
 === Test Context ===
 Element context: ${context.elementContext ?? 'unknown'}
 ${context.stepContext ? `Current test step: ${context.stepContext}` : ''}
-`
-      : '';
+`;
+    }
 
     return `You are a QA automation expert. A Playwright test uses the following locator that no longer matches any element on the page:
 
